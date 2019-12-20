@@ -1,0 +1,12 @@
+_ReSharper.Caches/
+Backup/
+src/Converter/obj/*
+src/Example/obj/Debug/*
+src/Example/bin/Debug/*
+src/Library/bin/Release/*
+src/Tests/obj/*
+src/Library/obj/*
+src/Library/bin/*
+src/Converter/bin/*
+.vs/
+Ude.sln.DotSettings.user
