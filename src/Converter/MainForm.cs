@@ -21,15 +21,24 @@ namespace Converter
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			string dir = @"D:\Projects\AbbRetail2\RFCN-9349";
+			try
+			{
+				this.button1.Enabled = false;
 
-			this.lvFiles.Items.Clear();
+				string dir = @"D:\Projects\AbbRetail2\RFCN-9349";
 
-			this.analyzer.ProcessDir(dir);
+				this.lvFiles.Items.Clear();
 
-			this.lvFiles.Columns[0].Width = -2;
-			this.lvFiles.Columns[1].Width = -2;
-			this.lvFiles.Columns[2].Width = -2;
+				this.analyzer.ProcessDir(dir);
+			}
+			finally 
+			{
+				this.lvFiles.Columns[0].Width = -2;
+				this.lvFiles.Columns[1].Width = -2;
+				this.lvFiles.Columns[2].Width = -2;
+
+				this.button1.Enabled = true;
+			}
 		}
 
 		private void button2_Click(object sender, EventArgs e)
