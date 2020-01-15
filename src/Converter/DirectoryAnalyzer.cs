@@ -38,7 +38,8 @@ namespace Converter
 			if (dir.Contains(@"obj\release")) return;
 			if (dir.Contains(@"resharper.caches")) return;
 			if (dir.Contains(@"abr\installers\content.update")) return;
-			
+			if (dir.Contains(@".git") && !dir.Contains(@".git-rewrite\t")) return;
+
 			foreach (string file in Directory.GetFiles(dir))
 			{
 				this.ProcessFile(file);
@@ -80,34 +81,31 @@ namespace Converter
 					this.detector.Reset();
 					this.detector.Feed(fs);
 					this.detector.DataEnd();
+				}
 
-					if (this.FileProcess != null)
-					{
-						this.FileProcess.Invoke(file, this.detector);
-					}
+				if (this.FileProcess != null)
+				{
+					this.FileProcess.Invoke(file, this.detector);
+				}
 
-					//if (Math.Abs(this.detector.Confidence - 1f) < 0.1f)
+				//if (Math.Abs(this.detector.Confidence - 1f) < 0.1f)
+				{
+					if (this.detector.Charset == "UTF-8") return;
+					if (this.detector.Charset == "UTF-16LE") return;
+					if (this.detector.Charset == "ASCII") return;
+					if (this.detector.Charset == "windows-1251")
 					{
-						if (this.detector.Charset == "UTF-8") return;
-						if (this.detector.Charset == "UTF-16LE") return;
-						if (this.detector.Charset == "ASCII") return;
-						if (this.detector.Charset == "windows-1251" 
-							//|| this.detector.Charset == "x-mac-cyrillic"
-						    //|| this.detector.Charset == "windows-1252"
-						    )
+						if (this.Win1251Finded != null)
 						{
-							if (this.Win1251Finded != null)
-							{
-								this.Win1251Finded.Invoke(file, this.detector);
-							}
-							return;
+							this.Win1251Finded.Invoke(file, this.detector);
 						}
+						return;
 					}
+				}
 
-					if (this.UnknownFinded != null)
-					{
-						this.UnknownFinded.Invoke(file, this.detector);
-					}
+				if (this.UnknownFinded != null)
+				{
+					this.UnknownFinded.Invoke(file, this.detector);
 				}
 			}
 			catch (Exception ex)
