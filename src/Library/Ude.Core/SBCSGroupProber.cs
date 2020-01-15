@@ -43,9 +43,9 @@ namespace Ude.Core
 {
     public class SBCSGroupProber : CharsetProber
     {
-        private static int PROBERS_NUM = 13;
-        private CharsetProber[] probers = new CharsetProber[PROBERS_NUM];        
-        private bool[] isActive = new bool[PROBERS_NUM];
+        private static int PROBERS_NUM;//; = 13;
+        private CharsetProber[] probers;// = new CharsetProber[PROBERS_NUM];        
+        private bool[] isActive;// = new bool[PROBERS_NUM];
         private int bestGuess;
         private int activeNum;
 
@@ -53,35 +53,37 @@ namespace Ude.Core
 	    {
 		    List<CharsetProber> list = new List<CharsetProber>();
 		    list.Add(new SingleByteCharSetProber(new Win1251Model()));
-		    list.Add(new SingleByteCharSetProber(new Koi8rModel()));
-		    list.Add(new SingleByteCharSetProber(new Latin5Model()));
-		    list.Add(new SingleByteCharSetProber(new MacCyrillicModel()));
+		   // list.Add(new SingleByteCharSetProber(new Koi8rModel()));
+		    //list.Add(new SingleByteCharSetProber(new Latin5Model()));
+		    //list.Add(new SingleByteCharSetProber(new MacCyrillicModel()));
 		    list.Add(new SingleByteCharSetProber(new Ibm866Model()));
-		    list.Add(new SingleByteCharSetProber(new Ibm855Model()));
-		    list.Add(new SingleByteCharSetProber(new Latin7Model()));
-		    list.Add(new SingleByteCharSetProber(new Win1253Model()));
-		    list.Add(new SingleByteCharSetProber(new Latin5BulgarianModel()));
-		    list.Add(new SingleByteCharSetProber(new Win1251BulgarianModel()));
+		    //list.Add(new SingleByteCharSetProber(new Ibm855Model()));
+		    //list.Add(new SingleByteCharSetProber(new Latin7Model()));
+		    //list.Add(new SingleByteCharSetProber(new Win1253Model()));
+		    //list.Add(new SingleByteCharSetProber(new Latin5BulgarianModel()));
+		    //list.Add(new SingleByteCharSetProber(new Win1251BulgarianModel()));
 
-		    HebrewProber hebprober = new HebrewProber();
-		    list.Add(hebprober);
-		    // Logical  
-		    SingleByteCharSetProber hebprober1 = new SingleByteCharSetProber(new Win1255Model(), false, hebprober);
+		    //HebrewProber hebprober = new HebrewProber();
+		    //list.Add(hebprober);
+		    //// Logical  
+		    //SingleByteCharSetProber hebprober1 = new SingleByteCharSetProber(new Win1255Model(), false, hebprober);
 
-		    list.Add(hebprober1);
-		    // Visual
-		    SingleByteCharSetProber hebprober2 = new SingleByteCharSetProber(new Win1255Model(), true, hebprober);
-		    list.Add(hebprober2);
+		    //list.Add(hebprober1);
+		    //// Visual
+		    //SingleByteCharSetProber hebprober2 = new SingleByteCharSetProber(new Win1255Model(), true, hebprober);
+		    //list.Add(hebprober2);
 
-		    hebprober.SetModelProbers(hebprober1, hebprober2);
+		    //hebprober.SetModelProbers(hebprober1, hebprober2);
 
-		    Reset();
 
 		    probers = list.ToArray();
 		    PROBERS_NUM = probers.Length;
-	    }
+		    isActive = new bool[probers.Length];
 
-	    public override ProbingState HandleData(byte[] buf, int offset, int len) 
+		    Reset();
+		}
+
+		public override ProbingState HandleData(byte[] buf, int offset, int len) 
         {
             ProbingState st = ProbingState.NotMe;
             
