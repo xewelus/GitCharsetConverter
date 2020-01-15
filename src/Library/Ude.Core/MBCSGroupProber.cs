@@ -37,6 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 using System;
+using System.Collections.Generic;
 
 namespace Ude.Core
 {
@@ -45,23 +46,33 @@ namespace Ude.Core
     /// </summary>
     public class MBCSGroupProber : CharsetProber
     {
-        private const int PROBERS_NUM = 7;
-        private readonly static string[] ProberName = 
-            { "UTF8", "SJIS", "EUCJP", "GB18030", "EUCKR", "Big5", "EUCTW" };
-        private CharsetProber[] probers = new CharsetProber[PROBERS_NUM];
-        private bool[] isActive = new bool[PROBERS_NUM];
+        private static int PROBERS_NUM; // = 7;
+        private Dictionary<CharsetProber, string> probersByName;
+        private CharsetProber[] probers; // = new CharsetProber[PROBERS_NUM];
+        private bool[] isActive; // = new bool[PROBERS_NUM];
         private int bestGuess;
         private int activeNum;
             
         public MBCSGroupProber()
         {
-            probers[0] = new UTF8Prober();
-            probers[1] = new SJISProber();
-            probers[2] = new EUCJPProber();
-            probers[3] = new GB18030Prober();
-            probers[4] = new EUCKRProber();
-            probers[5] = new Big5Prober();
-            probers[6] = new EUCTWProber();
+	        this.probersByName = new Dictionary<CharsetProber, string>();
+	        this.probersByName.Add(new UTF8Prober(), "UTF8");
+			this.probersByName.Add(new SJISProber(), "SJIS");
+			this.probersByName.Add(new EUCJPProber(), "EUCJP");
+			this.probersByName.Add(new GB18030Prober(), "GB18030");
+			this.probersByName.Add(new EUCKRProber(), "EUCKR");
+			this.probersByName.Add(new Big5Prober(), "Big5");
+			this.probersByName.Add(new EUCTWProber(), "EUCTW");
+
+			PROBERS_NUM = this.probersByName.Count;
+			this.isActive = new bool[this.probersByName.Count];
+			this.probers = new CharsetProber[this.probersByName.Count];
+	        int i = 0;
+	        foreach (KeyValuePair<CharsetProber, string> pair in this.probersByName)
+	        {
+		        this.probers[i++] = pair.Key;
+	        }
+
             Reset();        
         }
 
@@ -164,11 +175,9 @@ namespace Ude.Core
             GetConfidence();
             for (int i = 0; i < PROBERS_NUM; i++) {
                 if (!isActive[i]) {
-                    Console.WriteLine("  MBCS inactive: {0} (confidence is too low).", 
-                         ProberName[i]);
+                  
                 } else {
                     cf = probers[i].GetConfidence();
-                    Console.WriteLine("  MBCS {0}: [{1}]", cf, ProberName[i]);
                 }
             }
         }
