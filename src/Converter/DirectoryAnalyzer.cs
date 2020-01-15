@@ -37,7 +37,8 @@ namespace Converter
 			if (dir.Contains(@"obj\debug")) return;
 			if (dir.Contains(@"obj\release")) return;
 			if (dir.Contains(@"resharper.caches")) return;
-
+			if (dir.Contains(@"abr\installers\content.update")) return;
+			
 			foreach (string file in Directory.GetFiles(dir))
 			{
 				this.ProcessFile(file);
@@ -61,6 +62,15 @@ namespace Converter
 				if (ext == ".gif") return;
 				if (ext == ".ico") return;
 				if (ext == ".bmp") return;
+				if (ext == ".doc") return;
+				if (ext == ".xls") return;
+				if (ext == ".rar") return;
+				if (ext == ".msi") return;
+				if (ext == ".dbf") return;
+				if (ext == ".snk") return;
+				if (ext == ".dat") return;
+				if (ext == ".pfx") return;
+				if (ext == ".nupkg") return;
 			}
 
 			try
@@ -79,6 +89,7 @@ namespace Converter
 					//if (Math.Abs(this.detector.Confidence - 1f) < 0.1f)
 					{
 						if (this.detector.Charset == "UTF-8") return;
+						if (this.detector.Charset == "UTF-16LE") return;
 						if (this.detector.Charset == "ASCII") return;
 						if (this.detector.Charset == "windows-1251" 
 							//|| this.detector.Charset == "x-mac-cyrillic"
