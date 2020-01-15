@@ -144,8 +144,8 @@ namespace Ude.Core
                             charsetProbers[0] = new MBCSGroupProber();
                         if (charsetProbers[1] == null)
                             charsetProbers[1] = new SBCSGroupProber();
-                        if (charsetProbers[2] == null)
-                            charsetProbers[2] = new Latin1Prober(); 
+                        //if (charsetProbers[2] == null)
+                        //    charsetProbers[2] = new Latin1Prober(); 
                     }
                 } else { 
                     if (inputState == InputState.PureASCII &&
