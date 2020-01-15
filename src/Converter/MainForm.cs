@@ -1,5 +1,6 @@
 ﻿using System;
-using System.IO;
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using Ude;
 
@@ -10,87 +11,69 @@ namespace Converter
 		public MainForm()
 		{
 			this.InitializeComponent();
+
+			this.analyzer.UnknownFinded += this.analyzer_UnknownFinded;
+			this.analyzer.Win1251Finded += this.analyzer_Win1251Finded;
+			this.analyzer.Error += this.analyzer_Error;
 		}
 
-		private CharsetDetector detector = new CharsetDetector();
+		private readonly DirectoryAnalyzer analyzer = new DirectoryAnalyzer();
+
 		private void button1_Click(object sender, EventArgs e)
 		{
 			string dir = @"D:\Projects\AbbRetail2\RFCN-9349";
 
 			this.lvFiles.Items.Clear();
 
-			ProcessDir(dir);
+			this.analyzer.ProcessDir(dir);
 
 			this.lvFiles.Columns[0].Width = -2;
 			this.lvFiles.Columns[1].Width = -2;
 			this.lvFiles.Columns[2].Width = -2;
 		}
 
-		private void ProcessDir(string dir)
+		private void button2_Click(object sender, EventArgs e)
 		{
-			dir = dir.ToLower();
-
-			string folder = Path.GetFileName(dir);
-			if (folder == ".hg") return;
-			if (folder == ".vs") return;
-			if (dir.Contains(@"bin\debug")) return;
-			if (dir.Contains(@"bin\release")) return;
-			if (dir.Contains(@"obj\debug")) return;
-			if (dir.Contains(@"obj\release")) return;
-			if (dir.Contains(@"resharper.caches")) return;
-			
-			foreach (string file in Directory.GetFiles(dir))
-			{
-				ProcessFile(file);
-			}
-			foreach (string subdir in Directory.GetDirectories(dir))
-			{
-				ProcessDir(subdir);
-			}
+			string file = @"D:\projects\abbretail2\rfcn-9349\abr\common\abr.entities\03 client\NATURAL_PERSON.cs";
+			this.analyzer.ProcessFile(file);
 		}
 
-		private void ProcessFile(string file)
+		private void analyzer_UnknownFinded(string file, CharsetDetector detector)
 		{
-			string ext = Path.GetExtension(file);
-			if (ext != null)
-			{
-				ext = ext.ToLower();
-				if (ext == ".dll") return;
-				if (ext == ".pdb") return;
-				if (ext == ".exe") return;
-				if (ext == ".png") return;
-				if (ext == ".gif") return;
-				if (ext == ".ico") return;
-				if (ext == ".bmp") return;
-			}
+			ListViewItem listItem = this.lvFiles.Items.Add(file);
+			listItem.SubItems.Add(detector.Charset);
+			listItem.SubItems.Add(detector.Confidence.ToString());
+			listItem.ForeColor = Color.Red;
 
-			try
-			{
-				using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-				{
-					this.detector.Reset();
-					this.detector.Feed(fs);
-					this.detector.DataEnd();
+			Application.DoEvents();
+		}
 
-					if (Math.Abs(this.detector.Confidence - 1f) < 0.01f)
-					{
-						if (this.detector.Charset == "UTF-8") return;
-						if (this.detector.Charset == "ASCII") return;
-					}
+		private void analyzer_Win1251Finded(string file, CharsetDetector detector)
+		{
+			return;
 
-					ListViewItem listItem = this.lvFiles.Items.Add(file);
-					listItem.SubItems.Add(this.detector.Charset);
-					listItem.SubItems.Add(this.detector.Confidence.ToString());
+			ListViewItem listItem = this.lvFiles.Items.Add(file);
+			listItem.SubItems.Add(detector.Charset);
+			listItem.SubItems.Add(detector.Confidence.ToString());
 
-					Application.DoEvents();
-				}
-			}
-			catch (Exception ex)
-			{
-				ListViewItem listItem = this.lvFiles.Items.Add(file);
-				listItem.SubItems.Add("");
-				listItem.SubItems.Add(ex.ToString());
-			}
+			Application.DoEvents();
+		}
+
+		private void analyzer_Error(string file, Exception exception, CharsetDetector detector)
+		{
+			ListViewItem listItem = this.lvFiles.Items.Add(file);
+			listItem.SubItems.Add("");
+			listItem.SubItems.Add(exception.ToString());
+		}
+
+		private void lvFiles_ItemActivate(object sender, EventArgs e)
+		{
+			if (this.lvFiles.SelectedItems.Count == 0) return;
+
+			string file = this.lvFiles.SelectedItems[0].Text;
+			file = file.Replace("/", "\"");
+			file = string.Format("\"{0}\"", file);
+			Process.Start(file);
 		}
 	}
 }
