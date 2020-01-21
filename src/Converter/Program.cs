@@ -21,19 +21,8 @@ namespace Converter
 		{
 			Application.ThreadException += OnApplicationOnThreadException;
 
-			//MessageBox.Show("TEST");
-
-			//if (args.Length > 0)
-			//{
-			//	MessageBox.Show(args[0]);
-			//}
-
-			//return;
-
-			//ProcessFolder();
-			//TestConvert();
-
-			//return;
+			Tests.ConsoleRedirect.Test();
+			return;
 
 			ShowMainForm();
 		}

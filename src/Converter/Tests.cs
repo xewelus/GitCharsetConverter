@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Ude;
@@ -11,11 +10,44 @@ namespace Converter
 {
 	public static class Tests
 	{
-		public static void a()
+		public static class ConsoleRedirect
 		{
+			public static void Test()
+			{
+				Process process = new Process();
+				process.StartInfo.FileName = "cmd";
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.RedirectStandardInput = true;
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.ErrorDataReceived += ProcessOnErrorDataReceived;
+				process.OutputDataReceived += ProcessOnOutputDataReceived;
+				process.Start();
+				process.BeginOutputReadLine();
 
+				process.StandardInput.WriteLine("git");
+
+				process.WaitForExit();
+			}
+
+			private static void ProcessOnErrorDataReceived(object sender, DataReceivedEventArgs e)
+			{
+				LogConsole(e.Data, "console_errors.log");
+			}
+
+			private static void ProcessOnOutputDataReceived(object sender, DataReceivedEventArgs e)
+			{
+				LogConsole(e.Data, "console.log");
+			}
+
+			private static void LogConsole(string text, string logfile)
+			{
+				string logFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logfile);
+				File.AppendAllText(logFile, "[" + DateTime.Now + "]\r\n", Encoding.UTF8);
+				File.AppendAllText(logFile, text + "\r\n", Encoding.UTF8);
+			}
 		}
-
 
 		private static void TestConvert()
 		{
