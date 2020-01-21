@@ -71,6 +71,8 @@ namespace Ude
     /// </summary>                
     public class CharsetDetector : UniversalDetector, ICharsetDetector
     {
+	    public static bool NeedConsoleLog = false;
+
         private string charset;
         
         private float confidence;

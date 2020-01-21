@@ -292,8 +292,11 @@ namespace Ude.Core
 
         public override void DumpStatus()
         {
-            Console.WriteLine("  HEB: {0} - {1} [Logical-Visual score]", 
-               finalCharLogicalScore, finalCharVisualScore);
+	        if (CharsetDetector.NeedConsoleLog)
+	        {
+		        Console.WriteLine("  HEB: {0} - {1} [Logical-Visual score]",
+		                          finalCharLogicalScore, finalCharVisualScore);
+	        }
         }
         
         public override float GetConfidence()

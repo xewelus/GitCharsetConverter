@@ -173,8 +173,11 @@ namespace Ude.Core
 
         public override void DumpStatus()
         {
-            Console.WriteLine(" Latin1Prober: {0} [{1}]", 
-                GetConfidence(), GetCharsetName());
+	        if (CharsetDetector.NeedConsoleLog)
+	        {
+		        Console.WriteLine(" Latin1Prober: {0} [{1}]",
+		                          GetConfidence(), GetCharsetName());
+	        }
         }
     }
 }
