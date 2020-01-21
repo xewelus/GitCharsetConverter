@@ -23,6 +23,8 @@ namespace Converter
 			{
 				if (args[0] == "-git")
 				{
+					string folder = Directory.GetCurrentDirectory();
+					Tests.ProcessFolder(folder);
 					return;
 				}
 				MessageBox.Show(args[0]);

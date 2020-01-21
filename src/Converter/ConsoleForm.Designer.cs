@@ -37,6 +37,8 @@ namespace Converter
 			this.button2 = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.button5 = new System.Windows.Forms.Button();
+			this.cbWordWrap = new System.Windows.Forms.CheckBox();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -52,9 +54,12 @@ namespace Converter
 			this.tbText.Size = new System.Drawing.Size(770, 528);
 			this.tbText.TabIndex = 0;
 			this.tbText.Text = "";
+			this.tbText.WordWrap = false;
 			// 
 			// panel1
 			// 
+			this.panel1.Controls.Add(this.cbWordWrap);
+			this.panel1.Controls.Add(this.button5);
 			this.panel1.Controls.Add(this.button4);
 			this.panel1.Controls.Add(this.button3);
 			this.panel1.Controls.Add(this.button2);
@@ -71,7 +76,7 @@ namespace Converter
 			this.cbScroll.AutoSize = true;
 			this.cbScroll.Checked = true;
 			this.cbScroll.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.cbScroll.Location = new System.Drawing.Point(684, 22);
+			this.cbScroll.Location = new System.Drawing.Point(663, 23);
 			this.cbScroll.Name = "cbScroll";
 			this.cbScroll.Size = new System.Drawing.Size(80, 17);
 			this.cbScroll.TabIndex = 1;
@@ -90,7 +95,7 @@ namespace Converter
 			// 
 			// button2
 			// 
-			this.button2.Location = new System.Drawing.Point(142, 12);
+			this.button2.Location = new System.Drawing.Point(94, 12);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(65, 23);
 			this.button2.TabIndex = 2;
@@ -100,7 +105,7 @@ namespace Converter
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(222, 12);
+			this.button3.Location = new System.Drawing.Point(165, 12);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(65, 23);
 			this.button3.TabIndex = 3;
@@ -110,13 +115,34 @@ namespace Converter
 			// 
 			// button4
 			// 
-			this.button4.Location = new System.Drawing.Point(302, 12);
+			this.button4.Location = new System.Drawing.Point(236, 12);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(65, 23);
 			this.button4.TabIndex = 4;
 			this.button4.Text = "git 2";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.button4_Click);
+			// 
+			// button5
+			// 
+			this.button5.Location = new System.Drawing.Point(307, 12);
+			this.button5.Name = "button5";
+			this.button5.Size = new System.Drawing.Size(65, 23);
+			this.button5.TabIndex = 5;
+			this.button5.Text = "copy";
+			this.button5.UseVisualStyleBackColor = true;
+			this.button5.Click += new System.EventHandler(this.button5_Click);
+			// 
+			// cbWordWrap
+			// 
+			this.cbWordWrap.AutoSize = true;
+			this.cbWordWrap.Location = new System.Drawing.Point(663, 4);
+			this.cbWordWrap.Name = "cbWordWrap";
+			this.cbWordWrap.Size = new System.Drawing.Size(102, 17);
+			this.cbWordWrap.TabIndex = 6;
+			this.cbWordWrap.Text = "Перенос строк";
+			this.cbWordWrap.UseVisualStyleBackColor = true;
+			this.cbWordWrap.CheckedChanged += new System.EventHandler(this.cbWordWrap_CheckedChanged);
 			// 
 			// ConsoleForm
 			// 
@@ -144,5 +170,7 @@ namespace Converter
 		private Button button2;
 		private Button button3;
 		private Button button4;
+		private Button button5;
+		private CheckBox cbWordWrap;
 	}
 }

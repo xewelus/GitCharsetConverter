@@ -64,26 +64,31 @@ namespace Converter
 			MessageBox.Show(text, file);
 		}
 
-		private static void ProcessFolder()
+		public static void ProcessFolder()
+		{
+			string folder = ConfigurationManager.AppSettings["RepositoryFolder"];
+			if (string.IsNullOrEmpty(folder))
+			{
+				MessageBox.Show("Не задан параметр RepositoryFolder.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (!Directory.Exists(folder))
+			{
+				MessageBox.Show("Не найдена папка " + folder, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			folder = Path.Combine(folder, @".git-rewrite\t");
+			if (!Directory.Exists(folder)) return;
+
+			ProcessFolder(folder);
+		}
+
+		public static void ProcessFolder(string folder)
 		{
 			try
 			{
-				string folder = ConfigurationManager.AppSettings["RepositoryFolder"];
-				if (string.IsNullOrEmpty(folder))
-				{
-					MessageBox.Show("Не задан параметр RepositoryFolder.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-
-				if (!Directory.Exists(folder))
-				{
-					MessageBox.Show("Не найдена папка " + folder, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-
-				folder = Path.Combine(folder, @".git-rewrite\t");
-				if (!Directory.Exists(folder)) return;
-
 				DirectoryAnalyzer analyzer = new DirectoryAnalyzer();
 				analyzer.Error += AnalyzerOnError;
 				analyzer.Win1251Finded += AnalyzerWin1251Finded;

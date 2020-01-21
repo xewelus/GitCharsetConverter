@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -21,7 +22,7 @@ namespace Converter
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
-			//this.RunProcess(null, "cmd");
+			this.RunProcess(null, "cmd");
 			//this.RunProcess(@"D:\git\testenc2");
 		}
 
@@ -124,7 +125,6 @@ namespace Converter
 				Application.DoEvents();
 			}
 
-
 			this.process.StandardInput.WriteLine(text);
 			this.WriteLine("> " + text);
 
@@ -134,7 +134,6 @@ namespace Converter
 		private void button2_Click(object sender, EventArgs e)
 		{
 			this.RunProcess(@"D:\git\testenc2", "cmd");
-
 		}
 
 		private void button3_Click(object sender, EventArgs e)
@@ -146,10 +145,65 @@ namespace Converter
 		{
 			this.InputLine("set FILTER_BRANCH_SQUELCH_WARNING=1");
 
+			string dir = DIR_testenc2;
+			this.InputLine(Directory.GetDirectoryRoot(dir).Replace("\\", ""));
+			this.InputLine("cd " + dir);
+
 			string exePath = Assembly.GetExecutingAssembly().Location;
 			exePath = exePath.Replace("\\", "/");
-			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f -- --all", exePath);
+			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- --all", exePath);
 			this.InputLine("git " + args);
+		}
+
+		private const string DIR_testenc = @"D:\git\testenc";
+		private const string DIR_testenc2 = @"D:\git\testenc2";
+		private void button5_Click(object sender, EventArgs e)
+		{
+			ClearDir(DIR_testenc2);
+			CopyFilesRecursively(new DirectoryInfo(DIR_testenc), new DirectoryInfo(DIR_testenc2));
+			MessageBox.Show("Замена папки завершена.");
+		}
+
+		private static void ClearDir(string directory)
+		{
+			DirectoryInfo info = new DirectoryInfo(directory);
+			ClearDir(info);
+		}
+
+		private static void ClearDir(DirectoryInfo info)
+		{
+			foreach (FileInfo file in info.GetFiles())
+			{
+				File.SetAttributes(file.FullName, FileAttributes.Normal);
+				file.SetAccessControl(new FileSecurity());
+				file.Delete();
+			}
+			foreach (DirectoryInfo dir in info.GetDirectories())
+			{
+				ClearDir(dir);
+				dir.Delete();
+			}
+		}
+
+		public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
+		{
+			if (!target.Exists)
+			{
+				target.Create();
+			}
+			foreach (DirectoryInfo dir in source.GetDirectories())
+			{
+				CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+			}
+			foreach (FileInfo file in source.GetFiles())
+			{ 
+				file.CopyTo(Path.Combine(target.FullName, file.Name));
+			}
+		}
+
+		private void cbWordWrap_CheckedChanged(object sender, EventArgs e)
+		{
+			this.tbText.WordWrap = this.cbWordWrap.Checked;
 		}
 	}
 }
