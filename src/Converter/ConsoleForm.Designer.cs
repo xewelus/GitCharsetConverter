@@ -1,4 +1,6 @@
-﻿namespace Converter
+﻿using System.Windows.Forms;
+
+namespace Converter
 {
 	partial class ConsoleForm
 	{
@@ -28,7 +30,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tbText = new System.Windows.Forms.TextBox();
+			this.tbText = new System.Windows.Forms.RichTextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.button1 = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
@@ -44,7 +46,6 @@
 			this.tbText.MaxLength = 3276700;
 			this.tbText.Multiline = true;
 			this.tbText.Name = "tbText";
-			this.tbText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.tbText.Size = new System.Drawing.Size(770, 528);
 			this.tbText.TabIndex = 0;
 			this.tbText.WordWrap = false;
@@ -87,7 +88,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.TextBox tbText;
+		private System.Windows.Forms.RichTextBox tbText;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button button1;
 	}
