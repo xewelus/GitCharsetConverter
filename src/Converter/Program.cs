@@ -20,18 +20,12 @@ namespace Converter
 		static void Main(string[] args)
 		{
 			Application.ThreadException += OnApplicationOnThreadException;
-
-			Tests.ConsoleRedirect.Test();
-			return;
-
-			ShowMainForm();
-		}
-
-		private static void ShowMainForm()
-		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+
+			//Application.Run(new MainForm());
+			//Tests.ConsoleRedirect.Test();
+			Application.Run(new ConsoleForm());
 		}
 
 		private static void OnApplicationOnThreadException(object sender, ThreadExceptionEventArgs args)
