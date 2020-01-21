@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Converter
@@ -19,13 +21,26 @@ namespace Converter
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
-			this.RunProcess();
+			//this.RunProcess(null, "cmd");
+			//this.RunProcess(@"D:\git\testenc2");
 		}
 
-		private void RunProcess()
+		private void RunProcess(string workDir, string filename, params string[] args)
 		{
+			string argsString = args.Length == 0 ? null : string.Join(" ", args);
+
+			this.WriteLine(string.Format("> {0}: {1} {2}", workDir ?? Directory.GetCurrentDirectory(), filename, argsString));
+
 			this.process = new Process();
-			this.process.StartInfo.FileName = "cmd";
+			this.process.StartInfo.FileName = filename;
+			if (workDir != null)
+			{
+				this.process.StartInfo.WorkingDirectory = workDir;
+			}
+			if (argsString != null)
+			{
+				this.process.StartInfo.Arguments = argsString;
+			}
 			this.process.StartInfo.CreateNoWindow = true;
 			this.process.StartInfo.UseShellExecute = false;
 			this.process.StartInfo.RedirectStandardInput = true;
@@ -33,9 +48,12 @@ namespace Converter
 			this.process.StartInfo.RedirectStandardError = true;
 			this.process.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(866);
 			this.process.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(866);
+			this.process.StartInfo.Verb = "runas";
+			//this.process.StartInfo.EnvironmentVariables.Add("FILTER_BRANCH_SQUELCH_WARNING", "1");
 			this.process.ErrorDataReceived += this.ProcessOnErrorDataReceived;
 			this.process.OutputDataReceived += this.ProcessOnOutputDataReceived;
 			this.process.Start();
+
 			this.process.BeginOutputReadLine();
 			this.process.BeginErrorReadLine();
 		}
@@ -76,6 +94,11 @@ namespace Converter
 			data = data ?? string.Empty;
 			this.tbText.AppendText(data);
 			this.tbText.AppendText(Environment.NewLine);
+
+			if (this.cbScroll.Checked)
+			{
+				this.tbText.ScrollToCaret();
+			}
 		}
 
 		private static void LogConsole(string text, string logfile)
@@ -87,14 +110,46 @@ namespace Converter
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			this.InputLine("git2 --version");
+			string exePath = Assembly.GetExecutingAssembly().Location;
+			exePath = exePath.Replace("\\", "/");
+			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f -- --all", exePath);
+			this.RunProcess(@"D:\git\testenc2", "git", args);
 		}
 
+		private DateTime? lastInputTime;
 		private void InputLine(string text)
 		{
-			text = "> " + text;
+			while (this.lastInputTime != null && DateTime.Now.Subtract(this.lastInputTime.Value).TotalMilliseconds < 100)
+			{
+				Application.DoEvents();
+			}
+
+
 			this.process.StandardInput.WriteLine(text);
-			this.WriteLine(text);
+			this.WriteLine("> " + text);
+
+			this.lastInputTime = DateTime.Now;
+		}
+
+		private void button2_Click(object sender, EventArgs e)
+		{
+			this.RunProcess(@"D:\git\testenc2", "cmd");
+
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			this.InputLine("set");
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			this.InputLine("set FILTER_BRANCH_SQUELCH_WARNING=1");
+
+			string exePath = Assembly.GetExecutingAssembly().Location;
+			exePath = exePath.Replace("\\", "/");
+			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f -- --all", exePath);
+			this.InputLine("git " + args);
 		}
 	}
 }

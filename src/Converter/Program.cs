@@ -19,6 +19,16 @@ namespace Converter
 		[STAThread]
 		static void Main(string[] args)
 		{
+			if (args.Length > 0)
+			{
+				if (args[0] == "-git")
+				{
+					return;
+				}
+				MessageBox.Show(args[0]);
+				return;
+			}
+
 			Application.ThreadException += OnApplicationOnThreadException;
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
