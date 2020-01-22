@@ -5,7 +5,6 @@ using System.IO;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Converter
@@ -50,7 +49,6 @@ namespace Converter
 			this.process.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(866);
 			this.process.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(866);
 			this.process.StartInfo.Verb = "runas";
-			//this.process.StartInfo.EnvironmentVariables.Add("FILTER_BRANCH_SQUELCH_WARNING", "1");
 			this.process.ErrorDataReceived += this.ProcessOnErrorDataReceived;
 			this.process.OutputDataReceived += this.ProcessOnOutputDataReceived;
 			this.process.Start();
@@ -63,7 +61,7 @@ namespace Converter
 		{
 			lock (this)
 			{
-				LogConsole("ERROR: " + e.Data, "console.log");
+				LogConsole("ERROR: " + e.Data);
 				this.WriteLine(e.Data, Color.Red);
 			}
 		}
@@ -72,7 +70,7 @@ namespace Converter
 		{
 			lock (this)
 			{
-				LogConsole(e.Data, "console.log");
+				LogConsole(e.Data);
 				this.WriteLine(e.Data);
 			}
 		}
@@ -96,17 +94,22 @@ namespace Converter
 			this.tbText.AppendText(data);
 			this.tbText.AppendText(Environment.NewLine);
 
+			LogConsole(data);
+
 			if (this.cbScroll.Checked)
 			{
 				this.tbText.ScrollToCaret();
 			}
 		}
 
-		private static void LogConsole(string text, string logfile)
+		private static void LogConsole(string text, string logfile = "console.log")
 		{
-			string logFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logfile);
-			File.AppendAllText(logFile, "[" + DateTime.Now + "] ", Encoding.UTF8);
-			File.AppendAllText(logFile, text + "\r\n", Encoding.UTF8);
+			lock ("LogConsole")
+			{
+				string logFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logfile);
+				File.AppendAllText(logFile, "[" + DateTime.Now + "] ", Encoding.UTF8);
+				File.AppendAllText(logFile, text + "\r\n", Encoding.UTF8);
+			}
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -126,7 +129,7 @@ namespace Converter
 			}
 
 			this.process.StandardInput.WriteLine(text);
-			this.WriteLine("> " + text);
+			this.WriteLine("> " + text, Color.YellowGreen);
 
 			this.lastInputTime = DateTime.Now;
 		}
@@ -143,6 +146,8 @@ namespace Converter
 
 		private void button4_Click(object sender, EventArgs e)
 		{
+			this.WriteLine(((Control)sender).Text, COLOR_COMMAND);
+
 			this.InputLine("set FILTER_BRANCH_SQUELCH_WARNING=1");
 
 			string dir = DIR_testenc2;
@@ -152,16 +157,20 @@ namespace Converter
 			string exePath = Assembly.GetExecutingAssembly().Location;
 			exePath = exePath.Replace("\\", "/");
 			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- --all", exePath);
+			//string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- tag2", exePath);
+			//string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- master", exePath);
 			this.InputLine("git " + args);
 		}
 
 		private const string DIR_testenc = @"D:\git\testenc";
 		private const string DIR_testenc2 = @"D:\git\testenc2";
+		private static readonly Color COLOR_COMMAND = Color.DeepSkyBlue;
 		private void button5_Click(object sender, EventArgs e)
 		{
 			ClearDir(DIR_testenc2);
 			CopyFilesRecursively(new DirectoryInfo(DIR_testenc), new DirectoryInfo(DIR_testenc2));
-			MessageBox.Show("Замена папки завершена.");
+			this.WriteLine("Замена папки завершена.", COLOR_COMMAND);
+			//MessageBox.Show("Замена папки завершена.");
 		}
 
 		private static void ClearDir(string directory)
