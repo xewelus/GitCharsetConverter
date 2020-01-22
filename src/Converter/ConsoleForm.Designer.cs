@@ -34,8 +34,6 @@ namespace Converter
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.cbScroll = new System.Windows.Forms.CheckBox();
 			this.button1 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.button5 = new System.Windows.Forms.Button();
 			this.cbWordWrap = new System.Windows.Forms.CheckBox();
@@ -61,8 +59,6 @@ namespace Converter
 			this.panel1.Controls.Add(this.cbWordWrap);
 			this.panel1.Controls.Add(this.button5);
 			this.panel1.Controls.Add(this.button4);
-			this.panel1.Controls.Add(this.button3);
-			this.panel1.Controls.Add(this.button2);
 			this.panel1.Controls.Add(this.cbScroll);
 			this.panel1.Controls.Add(this.button1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -93,29 +89,9 @@ namespace Converter
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
-			// button2
-			// 
-			this.button2.Location = new System.Drawing.Point(94, 12);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(65, 23);
-			this.button2.TabIndex = 2;
-			this.button2.Text = "cmd";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
-			// 
-			// button3
-			// 
-			this.button3.Location = new System.Drawing.Point(165, 12);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(65, 23);
-			this.button3.TabIndex = 3;
-			this.button3.Text = "set";
-			this.button3.UseVisualStyleBackColor = true;
-			this.button3.Click += new System.EventHandler(this.button3_Click);
-			// 
 			// button4
 			// 
-			this.button4.Location = new System.Drawing.Point(236, 12);
+			this.button4.Location = new System.Drawing.Point(94, 12);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(65, 23);
 			this.button4.TabIndex = 4;
@@ -125,7 +101,7 @@ namespace Converter
 			// 
 			// button5
 			// 
-			this.button5.Location = new System.Drawing.Point(307, 12);
+			this.button5.Location = new System.Drawing.Point(165, 12);
 			this.button5.Name = "button5";
 			this.button5.Size = new System.Drawing.Size(65, 23);
 			this.button5.TabIndex = 5;
@@ -167,8 +143,6 @@ namespace Converter
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button button1;
 		private CheckBox cbScroll;
-		private Button button2;
-		private Button button3;
 		private Button button4;
 		private Button button5;
 		private CheckBox cbWordWrap;

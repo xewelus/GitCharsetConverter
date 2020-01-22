@@ -134,16 +134,6 @@ namespace Converter
 			this.lastInputTime = DateTime.Now;
 		}
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			this.RunProcess(@"D:\git\testenc2", "cmd");
-		}
-
-		private void button3_Click(object sender, EventArgs e)
-		{
-			this.InputLine("set");
-		}
-
 		private void button4_Click(object sender, EventArgs e)
 		{
 			this.WriteLine(((Control)sender).Text, COLOR_COMMAND);
