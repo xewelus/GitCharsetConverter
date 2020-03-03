@@ -61,7 +61,7 @@ namespace Converter
 			string text = File.ReadAllText(file, win1251);
 			File.WriteAllText(file, text, Encoding.UTF8);
 
-			MessageBox.Show(text, file);
+			//MessageBox.Show(text, file);
 		}
 
 		public static void ProcessFolder()

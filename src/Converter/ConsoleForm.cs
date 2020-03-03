@@ -29,7 +29,7 @@ namespace Converter
 		{
 			string argsString = args.Length == 0 ? null : string.Join(" ", args);
 
-			this.WriteLine(string.Format("> {0}: {1} {2}", workDir ?? Directory.GetCurrentDirectory(), filename, argsString));
+			this.WriteLine(string.Format("> {0}: {1} {2}", workDir ?? Directory.GetCurrentDirectory(), filename, argsString), COLOR_COMMAND);
 
 			this.process = new Process();
 			this.process.StartInfo.FileName = filename;
@@ -152,6 +152,36 @@ namespace Converter
 			this.InputLine("git " + args);
 		}
 
+		private void btnGit3_Click(object sender, EventArgs e)
+		{
+			string range;
+			if (this.tbFrom.TextLength == 0 && this.tbTo.TextLength == 0)
+			{
+				range = "--all";
+			}
+			else if (this.tbFrom.TextLength == 0)
+			{
+				range = this.tbTo.Text;
+			}
+			else
+			{
+				range = $"{this.tbFrom.Text}..{this.tbTo.Text}";
+			}
+
+			this.WriteLine(((Control)sender).Text, COLOR_COMMAND);
+
+			this.InputLine("set FILTER_BRANCH_SQUELCH_WARNING=1");
+
+			string dir = DIR_testenc2;
+			this.InputLine(Directory.GetDirectoryRoot(dir).Replace("\\", ""));
+			this.InputLine("cd " + dir);
+
+			string exePath = Assembly.GetExecutingAssembly().Location;
+			exePath = exePath.Replace("\\", "/");
+			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- {1}", exePath, range);
+			this.InputLine("git " + args);
+		}
+
 		private const string DIR_testenc = @"D:\git\testenc";
 		private const string DIR_testenc2 = @"D:\git\testenc2";
 		private static readonly Color COLOR_COMMAND = Color.DeepSkyBlue;
@@ -184,7 +214,7 @@ namespace Converter
 			}
 		}
 
-		public static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
+		private static void CopyFilesRecursively(DirectoryInfo source, DirectoryInfo target)
 		{
 			if (!target.Exists)
 			{
@@ -203,6 +233,24 @@ namespace Converter
 		private void cbWordWrap_CheckedChanged(object sender, EventArgs e)
 		{
 			this.tbText.WordWrap = this.cbWordWrap.Checked;
+		}
+
+		private void btnCR_Click(object sender, EventArgs e)
+		{
+			this.WriteLine(((Control)sender).Text, COLOR_COMMAND);
+
+			this.InputLine("set FILTER_BRANCH_SQUELCH_WARNING=1");
+
+			string dir = @"C:\r";
+			this.InputLine(Directory.GetDirectoryRoot(dir).Replace("\\", ""));
+			this.InputLine("cd " + dir);
+
+			string exePath = Assembly.GetExecutingAssembly().Location;
+			exePath = exePath.Replace("\\", "/");
+			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- --all", exePath);
+			//string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- tag2", exePath);
+			//string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- master", exePath);
+			this.InputLine("git " + args);
 		}
 	}
 }
