@@ -25,7 +25,7 @@ namespace Converter
 			this.detector = detector;
 		}
 
-		public void ProcessDir(string dir)
+		public void ProcessDir(string dir, DateTime? dateMoreThan)
 		{
 			dir = dir.ToLower();
 
@@ -42,15 +42,15 @@ namespace Converter
 
 			foreach (string file in Directory.GetFiles(dir))
 			{
-				this.ProcessFile(file);
+				this.ProcessFile(file, dateMoreThan);
 			}
 			foreach (string subdir in Directory.GetDirectories(dir))
 			{
-				this.ProcessDir(subdir);
+				this.ProcessDir(subdir, dateMoreThan);
 			}
 		}
 
-		public void ProcessFile(string file)
+		public void ProcessFile(string file, DateTime? dateMoreThan)
 		{
 			string ext = Path.GetExtension(file);
 			if (ext != null)
@@ -72,6 +72,15 @@ namespace Converter
 				if (ext == ".dat") return;
 				if (ext == ".pfx") return;
 				if (ext == ".nupkg") return;
+			}
+
+			if (dateMoreThan != null)
+			{
+				DateTime time = File.GetLastWriteTime(file);
+				if (time <= dateMoreThan)
+				{
+					return;
+				}
 			}
 
 			try
