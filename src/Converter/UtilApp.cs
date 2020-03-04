@@ -10,27 +10,33 @@ namespace Converter
 {
 	public static class UtilApp
 	{
+		public static bool LOG_ENABLED = true;
+		private static string logPrefix = new string(' ', 7);
 		public static void Process(string[] args)
 		{
-			if (args.Length < 2)
+			try
 			{
-				MessageBox.Show("Не заданы необходимые аргументы.");
-				return;
+				if (args.Length < 2)
+				{
+					throw new Exception("Не заданы необходимые аргументы.");
+				}
+				string projDir = args[1];
+				string folder = Directory.GetCurrentDirectory();
+
+				if (LOG_ENABLED)
+				{
+					Log(string.Format("Project alias: {0}, folder: {1}", projDir, folder));
+				}
+
+				List<string> files = GetFiles(folder, projDir);
+				ProcessFolder(folder, files);
 			}
-			string projDir = args[1];
-			string folder = Directory.GetCurrentDirectory();
-
-			//Session session = Session.Load();
-			//DateTime? time = session.GetLastTime(folder);
-			//ProcessFolder(folder, time);
-			//session.SetLastTime(folder, DateTime.Now);
-
-			//MessageBox.Show("Start process folder.");
-
-			List<string> files = GetFiles(folder, projDir);
-			ProcessFolder(folder, null, files);
+			catch (Exception ex)
+			{
+				Log(ex.ToString(), true);
+				//MessageBox.Show(ex.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
-
 
 		private static List<string> GetFiles(string folder, string projDir)
 		{
@@ -40,12 +46,25 @@ namespace Converter
 				return null;
 			}
 
-			//MessageBox.Show("parent: " + parentSha);
+			logPrefix = parentSha.Substring(0, 7);
+			if (LOG_ENABLED)
+			{
+				Log(string.Format("Parent: {0}", parentSha));
+			}
 
 			List<string> commits = GetCommits(folder, parentSha);
 			if (commits == null)
 			{
+				if (LOG_ENABLED)
+				{
+					Log("No commits found.");
+				}
 				return null;
+			}
+
+			if (LOG_ENABLED)
+			{
+				Log(string.Format("Commits found: {0}", string.Join(", ", commits.ToArray())));
 			}
 
 			List<string> result = null;
@@ -62,7 +81,13 @@ namespace Converter
 					}
 					else
 					{
-						result.AddRange(files);
+						foreach (string file in files)
+						{
+							if (!result.Contains(file))
+							{
+								result.Add(file);
+							}
+						}
 					}
 				}
 			}
@@ -134,7 +159,12 @@ namespace Converter
 			{
 				if (!string.IsNullOrEmpty(line))
 				{
-					list.Add(line.ToLower().Replace("/", "\\"));
+					string path = line;
+					if (path.StartsWith("\""))
+					{
+						path = StringUtils.DecodeOctateString(line).Trim('\"');
+					}
+					list.Add(path.ToLower().Replace("/", "\\"));
 				}
 			}
 			return list;
@@ -145,22 +175,57 @@ namespace Converter
 			Encoding win1251 = Encoding.GetEncoding("windows-1251");
 			string text = File.ReadAllText(file, win1251);
 			File.WriteAllText(file, text, Encoding.UTF8);
-
-			//MessageBox.Show(text, file);
 		}
 
-		public static void ProcessFolder(string folder, DateTime? dateMoreThan, List<string> files)
+		public static void ProcessFolder(string folder, List<string> files)
 		{
 			try
 			{
 				DirectoryAnalyzer analyzer = new DirectoryAnalyzer();
 				analyzer.Error += AnalyzerOnError;
 				analyzer.Win1251Finded += AnalyzerWin1251Finded;
-				analyzer.ProcessDir(folder, dateMoreThan, folder, files);
+
+				if (files == null)
+				{
+					analyzer.ProcessDir(folder);
+
+					if (LOG_ENABLED)
+					{
+						Log("Process all files mode.");
+					}
+				}
+				else
+				{
+					if (LOG_ENABLED)
+					{
+						Log("Files to process:\r\n" + string.Join("\r\n", files.ToArray()));
+					}
+
+					foreach (string file in files)
+					{
+						try
+						{
+							string path = Path.Combine(folder, file);
+							if (File.Exists(path))
+							{
+								analyzer.ProcessFile(path);
+							}
+						}
+						catch (Exception ex)
+						{
+							string message = string.Format("Ошибка при обработке файла '{0}'.", file);
+							if (LOG_ENABLED)
+							{
+								Log(string.Format("{0}\r\n{1}", message, ex), true);
+							}
+						}
+					}
+				}
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Log(ex.ToString(), true);
+				//MessageBox.Show(ex.ToString(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -172,14 +237,21 @@ namespace Converter
 
 		private static void AnalyzerOnError(string file, Exception exception, CharsetDetector detector)
 		{
-			Log(string.Format("Ошибка {0}:\r\n{1}\r\n", file, exception));
-			MessageBox.Show(file + ":\r\n\r\n" + exception, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			Log(string.Format("Ошибка {0}:\r\n{1}\r\n", file, exception), true);
+			//MessageBox.Show(file + ":\r\n\r\n" + exception, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
-		private static void Log(string message)
+		private static void Log(string message, bool error = false)
 		{
+			string text = string.Format("\r\n[{0:dd.MM.yyyy HH.mm:ss} {1}] {2}", DateTime.Now, logPrefix, message);
 			string logFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
-			File.AppendAllText(logFile, string.Format("\r\n[{0:dd.MM.yyyy HH.mm:ss}] {1}", DateTime.Now, message), Encoding.UTF8);
+			File.AppendAllText(logFile, text, Encoding.UTF8);
+
+			if (error)
+			{
+				string errorLogFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "errors.txt");
+				File.AppendAllText(errorLogFile, text, Encoding.UTF8);
+			}
 		}
 	}
 }

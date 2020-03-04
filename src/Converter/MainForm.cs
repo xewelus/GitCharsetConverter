@@ -29,7 +29,7 @@ namespace Converter
 
 				this.lvFiles.Items.Clear();
 
-				this.analyzer.ProcessDir(dir, null, null, null);
+				this.analyzer.ProcessDir(dir);
 			}
 			finally 
 			{
@@ -44,7 +44,7 @@ namespace Converter
 		private void button2_Click(object sender, EventArgs e)
 		{
 			string file = @"D:\projects\abbretail2\rfcn-9349\abr\common\abr.entities\03 client\NATURAL_PERSON.cs";
-			this.analyzer.ProcessFile(file, null, null, null);
+			this.analyzer.ProcessFile(file);
 		}
 
 		private void analyzer_UnknownFinded(string file, CharsetDetector detector)

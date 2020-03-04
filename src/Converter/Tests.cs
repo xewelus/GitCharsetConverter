@@ -73,7 +73,7 @@ namespace Converter
 			folder = Path.Combine(folder, @".git-rewrite\t");
 			if (!Directory.Exists(folder)) return;
 
-			UtilApp.ProcessFolder(folder, null, null);
+			UtilApp.ProcessFolder(folder, null);
 		}
 	}
 }

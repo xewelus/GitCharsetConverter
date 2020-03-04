@@ -285,11 +285,12 @@ namespace Converter
 			this.tbText.WordWrap = this.cbWordWrap.Checked;
 		}
 
+		private const string TEST_R = "r";
 		private void btnCR_Click(object sender, EventArgs e)
 		{
 			this.WriteLine(((Control)sender).Text, COLOR_COMMAND);
 
-			string projDir = "r";
+			string projDir = TEST_R;
 			this.FilterBranch(projDir);
 		}
 
@@ -365,7 +366,7 @@ namespace Converter
 
 		private void WriteCommitsFiles(List<string> commits)
 		{
-			string project = "r";
+			string project = TEST_R;
 
 			string projDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, project);
 			if (!Directory.Exists(projDir))
@@ -386,6 +387,9 @@ namespace Converter
 
 			using (this.BatchLog())
 			{
+				//this.WriteChangedFiles(commitsDir, "198af05336a09ba071aa0f7a4a2b6c35126177a8");
+				//return;
+				
 				foreach (string commit in commits)
 				{
 					if (!IsCommit(commit)) continue;

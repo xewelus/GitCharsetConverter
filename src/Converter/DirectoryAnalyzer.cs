@@ -22,14 +22,13 @@ namespace Converter
 		{
 		}
 
-		public DirectoryAnalyzer(CharsetDetector detector)
+		private DirectoryAnalyzer(CharsetDetector detector)
 		{
 			this.detector = detector;
 		}
 
-		public void ProcessDir(string dir, DateTime? dateMoreThan, string rootDir, List<string> files)
+		public void ProcessDir(string dir)
 		{
-			rootDir = Path.GetFullPath(rootDir);
 			dir = dir.ToLower();
 
 			string folder = Path.GetFileName(dir);
@@ -45,15 +44,15 @@ namespace Converter
 
 			foreach (string file in Directory.GetFiles(dir))
 			{
-				this.ProcessFile(file, dateMoreThan, rootDir, files);
+				this.ProcessFile(file);
 			}
 			foreach (string subdir in Directory.GetDirectories(dir))
 			{
-				this.ProcessDir(subdir, dateMoreThan, rootDir, files);
+				this.ProcessDir(subdir);
 			}
 		}
 
-		public void ProcessFile(string file, DateTime? dateMoreThan, string rootDir, List<string> files)
+		public void ProcessFile(string file)
 		{
 			string ext = Path.GetExtension(file);
 			if (ext != null)
@@ -75,27 +74,6 @@ namespace Converter
 				if (ext == ".dat") return;
 				if (ext == ".pfx") return;
 				if (ext == ".nupkg") return;
-			}
-
-			if (dateMoreThan != null)
-			{
-				DateTime time = File.GetLastWriteTime(file);
-				if (time <= dateMoreThan)
-				{
-					return;
-				}
-			}
-
-			if (files != null)
-			{
-				string path = file.Substring(rootDir.Length + 1).ToLower();
-
-				if (!files.Contains(path))
-				{
-					//MessageBox.Show("file NO: " + path);
-					return;
-				}
-				//MessageBox.Show("file YES: " + path);
 			}
 
 			try
