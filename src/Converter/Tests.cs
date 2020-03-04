@@ -52,7 +52,7 @@ namespace Converter
 		private static void TestConvert()
 		{
 			string file = @"D:\git\testenc2\windows-1251.txt";
-			Program.ConvertFile(file);
+			UtilApp.ConvertFile(file);
 		}
 
 		public static void ProcessFolder()
@@ -73,7 +73,7 @@ namespace Converter
 			folder = Path.Combine(folder, @".git-rewrite\t");
 			if (!Directory.Exists(folder)) return;
 
-			Program.ProcessFolder(folder, null);
+			UtilApp.ProcessFolder(folder, null, null);
 		}
 	}
 }

@@ -289,15 +289,20 @@ namespace Converter
 		{
 			this.WriteLine(((Control)sender).Text, COLOR_COMMAND);
 
+			string projDir = "r";
+			this.FilterBranch(projDir);
+		}
+
+		private void FilterBranch(string projDir)
+		{
 			this.InputLine("set FILTER_BRANCH_SQUELCH_WARNING=1");
 
 			this.InputCd(@"C:\r");
 
 			string exePath = Assembly.GetExecutingAssembly().Location;
 			exePath = exePath.Replace("\\", "/");
-			string args = string.Format(@"filter-branch --tree-filter ""{0} -git"" -f --tag-name-filter cat -- --all", exePath);
+			string args = string.Format(@"filter-branch --tree-filter ""{0} -git {1}"" -f --tag-name-filter cat -- --all", exePath, projDir);
 
-			this.outputHandler = new RewriteLinesAnalyzer();
 			this.InputLine("git " + args);
 		}
 

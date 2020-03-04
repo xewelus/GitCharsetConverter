@@ -64,6 +64,7 @@
     <Compile Include="DirectoryAnalyzer.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Tests.cs" />
+    <Compile Include="UtilApp.cs" />
     <EmbeddedResource Include="ConsoleForm.resx">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
     </EmbeddedResource>

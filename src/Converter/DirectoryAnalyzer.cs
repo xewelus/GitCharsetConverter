@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using Ude;
 
 namespace Converter
@@ -25,8 +27,9 @@ namespace Converter
 			this.detector = detector;
 		}
 
-		public void ProcessDir(string dir, DateTime? dateMoreThan)
+		public void ProcessDir(string dir, DateTime? dateMoreThan, string rootDir, List<string> files)
 		{
+			rootDir = Path.GetFullPath(rootDir);
 			dir = dir.ToLower();
 
 			string folder = Path.GetFileName(dir);
@@ -42,15 +45,15 @@ namespace Converter
 
 			foreach (string file in Directory.GetFiles(dir))
 			{
-				this.ProcessFile(file, dateMoreThan);
+				this.ProcessFile(file, dateMoreThan, rootDir, files);
 			}
 			foreach (string subdir in Directory.GetDirectories(dir))
 			{
-				this.ProcessDir(subdir, dateMoreThan);
+				this.ProcessDir(subdir, dateMoreThan, rootDir, files);
 			}
 		}
 
-		public void ProcessFile(string file, DateTime? dateMoreThan)
+		public void ProcessFile(string file, DateTime? dateMoreThan, string rootDir, List<string> files)
 		{
 			string ext = Path.GetExtension(file);
 			if (ext != null)
@@ -81,6 +84,18 @@ namespace Converter
 				{
 					return;
 				}
+			}
+
+			if (files != null)
+			{
+				string path = file.Substring(rootDir.Length + 1).ToLower();
+
+				if (!files.Contains(path))
+				{
+					//MessageBox.Show("file NO: " + path);
+					return;
+				}
+				//MessageBox.Show("file YES: " + path);
 			}
 
 			try
