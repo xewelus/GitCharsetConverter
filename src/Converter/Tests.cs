@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using LibGit2Sharp;
 using Ude;
 
 namespace Converter
@@ -74,6 +77,31 @@ namespace Converter
 			if (!Directory.Exists(folder)) return;
 
 			UtilApp.ProcessFolder(folder, null);
+		}
+
+		private static void TestLibGit()
+		{
+			string result;
+			using (var repo = new Repository("C:/r"))
+			{
+				List<Commit> CommitList = new List<Commit>();
+				//foreach (LogEntry entry in repo.Commits.QueryBy("relative/path/to/your/file").ToList())
+				foreach (var entry in repo.Commits)
+				{
+					CommitList.Add(entry);
+				}
+				CommitList.Add(null); // Added to show correct initial add
+
+				int ChangeDesired = 0; // Change difference desired
+				var repoDifferences = repo.Diff.Compare<Patch>((Equals(CommitList[ChangeDesired + 1], null)) ? null : CommitList[ChangeDesired + 1].Tree, (Equals(CommitList[ChangeDesired], null)) ? null : CommitList[ChangeDesired].Tree);
+				PatchEntryChanges file = null;
+				try { file = repoDifferences.First(e => e.Path == "relative/path/to/your/file"); }
+				catch { } // If the file has been renamed in the past- this search will fail
+				if (!Equals(file, null))
+				{
+					result = file.Patch;
+				}
+			}
 		}
 	}
 }
