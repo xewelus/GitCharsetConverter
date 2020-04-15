@@ -68,6 +68,20 @@
     <Compile Include="Session.cs" />
     <Compile Include="StringUtils.cs" />
     <Compile Include="Tests.cs" />
+    <Compile Include="Ude\BitPackage.cs" />
+    <Compile Include="Ude\CharsetDetector.cs" />
+    <Compile Include="Ude\CharsetProber.cs" />
+    <Compile Include="Ude\CodingStateMachine.cs" />
+    <Compile Include="Ude\ICharsetDetector.cs" />
+    <Compile Include="Ude\LangCyrillicModel.cs" />
+    <Compile Include="Ude\MBCSGroupProber.cs" />
+    <Compile Include="Ude\MBCSSM.cs" />
+    <Compile Include="Ude\SBCharsetProber.cs" />
+    <Compile Include="Ude\SBCSGroupProber.cs" />
+    <Compile Include="Ude\SequenceModel.cs" />
+    <Compile Include="Ude\SMModel.cs" />
+    <Compile Include="Ude\UniversalDetector.cs" />
+    <Compile Include="Ude\UTF8Prober.cs" />
     <Compile Include="UtilApp.cs" />
     <EmbeddedResource Include="ConsoleForm.resx">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
@@ -99,11 +113,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Library\Ude.csproj">
-      <Project>{7becb850-389a-44fc-8523-3ef0b2540f07}</Project>
-      <Name>Ude</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
