@@ -11,12 +11,6 @@ namespace Ude.Core
 		{
 			this.probersByName = new Dictionary<CharsetProber, string>();
 			this.probersByName.Add(new UTF8Prober(), "UTF8");
-			//this.probersByName.Add(new SJISProber(), "SJIS");
-			//this.probersByName.Add(new EUCJPProber(), "EUCJP");
-			//this.probersByName.Add(new GB18030Prober(), "GB18030");
-			//this.probersByName.Add(new EUCKRProber(), "EUCKR");
-			//this.probersByName.Add(new Big5Prober(), "Big5");
-			//this.probersByName.Add(new EUCTWProber(), "EUCTW");
 
 			PROBERS_NUM = this.probersByName.Count;
 			this.isActive = new bool[this.probersByName.Count];

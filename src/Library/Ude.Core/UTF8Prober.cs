@@ -1,6 +1,6 @@
 namespace Ude.Core
 {
-	public class UTF8Prober : CharsetProber
+	public sealed class UTF8Prober : CharsetProber
 	{
 		public UTF8Prober()
 		{
@@ -27,12 +27,11 @@ namespace Ude.Core
 
 		public override ProbingState HandleData(byte[] buf, int offset, int len)
 		{
-			int codingState = SMModel.START;
 			int max = offset + len;
 
 			for (int i = offset; i < max; i++)
 			{
-				codingState = this.codingSM.NextState(buf[i]);
+				int codingState = this.codingSM.NextState(buf[i]);
 
 				if (codingState == SMModel.ERROR)
 				{
@@ -61,7 +60,7 @@ namespace Ude.Core
 		public override float GetConfidence()
 		{
 			float unlike = 0.99f;
-			float confidence = 0.0f;
+			float confidence;
 
 			if (this.numOfMBChar < 6)
 			{

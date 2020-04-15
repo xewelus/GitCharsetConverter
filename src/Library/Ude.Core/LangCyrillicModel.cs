@@ -3,7 +3,7 @@ namespace Ude.Core
 	public abstract class CyrillicModel : SequenceModel
 	{
 		public CyrillicModel(byte[] charToOrderMap, string name)
-			: base(charToOrderMap, RUSSIAN_LANG_MODEL, 0.976601f, false, name)
+			: base(charToOrderMap, RUSSIAN_LANG_MODEL, 0.976601f, name)
 		{
 		}
 

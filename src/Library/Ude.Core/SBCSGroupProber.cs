@@ -3,33 +3,13 @@ using System.Collections.Generic;
 
 namespace Ude.Core
 {
-	public class SBCSGroupProber : CharsetProber
+	public sealed class SBCSGroupProber : CharsetProber
 	{
 		public SBCSGroupProber()
 		{
 			List<CharsetProber> list = new List<CharsetProber>();
 			list.Add(new SingleByteCharSetProber(new Win1251Model()));
-			// list.Add(new SingleByteCharSetProber(new Koi8rModel()));
-			//list.Add(new SingleByteCharSetProber(new Latin5Model()));
-			//list.Add(new SingleByteCharSetProber(new MacCyrillicModel()));
 			list.Add(new SingleByteCharSetProber(new Ibm866Model()));
-			//list.Add(new SingleByteCharSetProber(new Ibm855Model()));
-			//list.Add(new SingleByteCharSetProber(new Latin7Model()));
-			//list.Add(new SingleByteCharSetProber(new Win1253Model()));
-			//list.Add(new SingleByteCharSetProber(new Latin5BulgarianModel()));
-			//list.Add(new SingleByteCharSetProber(new Win1251BulgarianModel()));
-
-			//HebrewProber hebprober = new HebrewProber();
-			//list.Add(hebprober);
-			//// Logical  
-			//SingleByteCharSetProber hebprober1 = new SingleByteCharSetProber(new Win1255Model(), false, hebprober);
-
-			//list.Add(hebprober1);
-			//// Visual
-			//SingleByteCharSetProber hebprober2 = new SingleByteCharSetProber(new Win1255Model(), true, hebprober);
-			//list.Add(hebprober2);
-
-			//hebprober.SetModelProbers(hebprober1, hebprober2);
 
 			this.probers = list.ToArray();
 			PROBERS_NUM = this.probers.Length;
@@ -46,8 +26,6 @@ namespace Ude.Core
 
 		public override ProbingState HandleData(byte[] buf, int offset, int len)
 		{
-			ProbingState st = ProbingState.NotMe;
-
 			//apply filter to original buffer, and we got new buffer back
 			//depend on what script it is, we will feed them the new buffer 
 			//we got after applying proper filter
@@ -62,7 +40,7 @@ namespace Ude.Core
 			{
 				if (!this.isActive[i])
 					continue;
-				st = this.probers[i].HandleData(newBuf, 0, newBuf.Length);
+				ProbingState st = this.probers[i].HandleData(newBuf, 0, newBuf.Length);
 
 				if (st == ProbingState.FoundIt)
 				{
@@ -86,7 +64,7 @@ namespace Ude.Core
 
 		public override float GetConfidence()
 		{
-			float bestConf = 0.0f, cf;
+			float bestConf = 0.0f;
 			switch (this.state)
 			{
 				case ProbingState.FoundIt:
@@ -98,7 +76,7 @@ namespace Ude.Core
 					{
 						if (!this.isActive[i])
 							continue;
-						cf = this.probers[i].GetConfidence();
+						float cf = this.probers[i].GetConfidence();
 						if (bestConf < cf)
 						{
 							bestConf = cf;
@@ -139,14 +117,14 @@ namespace Ude.Core
 
 		public override void Reset()
 		{
-			int activeNum = 0;
+			this.activeNum = 0;
 			for (int i = 0; i < PROBERS_NUM; i++)
 			{
 				if (this.probers[i] != null)
 				{
 					this.probers[i].Reset();
 					this.isActive[i] = true;
-					activeNum++;
+					this.activeNum++;
 				}
 				else
 				{

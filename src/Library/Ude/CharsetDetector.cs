@@ -31,10 +31,6 @@ namespace Ude
 	/// </summary>                
 	public class CharsetDetector : UniversalDetector, ICharsetDetector
 	{
-		public CharsetDetector() : base(FILTER_ALL)
-		{
-		}
-
 		public static bool NeedConsoleLog = false;
 
 		public string Charset
@@ -47,11 +43,6 @@ namespace Ude
 		{
 			get;
 			private set;
-		}
-
-		public bool IsDone()
-		{
-			return this.done;
 		}
 
 		protected override void Report(string charset, float confidence)

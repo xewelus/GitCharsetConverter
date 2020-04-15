@@ -1,5 +1,3 @@
-using System;
-
 namespace Ude.Core
 {
 	/// <summary>
@@ -7,43 +5,30 @@ namespace Ude.Core
 	/// </summary>
 	public abstract class SMModel
 	{
-		public SMModel(BitPackage classTable, int classFactor,
-			BitPackage stateTable, int[] charLenTable, String name)
+		protected SMModel(BitPackage classTable, int classFactor,
+			BitPackage stateTable, int[] charLenTable, string name)
 		{
 			this.classTable = classTable;
-			this.classFactor = classFactor;
+			this.ClassFactor = classFactor;
 			this.stateTable = stateTable;
 			this.charLenTable = charLenTable;
-			this.name = name;
+			this.Name = name;
 		}
 
 		public const int START = 0;
 		public const int ERROR = 1;
 		public const int ITSME = 2;
-		public int[] charLenTable;
+		public readonly int[] charLenTable;
+		private readonly BitPackage classTable;
 
-		private readonly int classFactor;
-
-		public BitPackage classTable;
-
-		private readonly string name;
-		public BitPackage stateTable;
+		public readonly BitPackage stateTable;
 
 		public string Name
 		{
-			get
-			{
-				return this.name;
-			}
+			get;
 		}
 
-		public int ClassFactor
-		{
-			get
-			{
-				return this.classFactor;
-			}
-		}
+		public int ClassFactor { get; }
 
 		public int GetClass(byte b)
 		{

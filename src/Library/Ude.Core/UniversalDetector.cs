@@ -3,50 +3,29 @@ namespace Ude.Core
 	enum InputState
 	{
 		PureASCII = 0,
-		EscASCII = 1,
 		Highbyte = 2
 	}
 
 	public abstract class UniversalDetector
 	{
-		public UniversalDetector(int languageFilter)
+		protected UniversalDetector()
 		{
 			this.start = true;
 			this.inputState = InputState.PureASCII;
 			this.lastChar = 0x00;
-			this.bestGuess = -1;
-			this.languageFilter = languageFilter;
 		}
 
-		protected const int FILTER_CHINESE_SIMPLIFIED = 1;
-		protected const int FILTER_CHINESE_TRADITIONAL = 2;
-		protected const int FILTER_JAPANESE = 4;
-		protected const int FILTER_KOREAN = 8;
-		protected const int FILTER_NON_CJK = 16;
-		protected const int FILTER_ALL = 31;
+		private const float MINIMUM_THRESHOLD = 0.20f;
+		private const int PROBERS_NUM = 2;
 
-		protected const float SHORTCUT_THRESHOLD = 0.95f;
-		protected const float MINIMUM_THRESHOLD = 0.20f;
-		protected const int PROBERS_NUM = 3;
-
-		protected static int FILTER_CHINESE =
-			FILTER_CHINESE_SIMPLIFIED | FILTER_CHINESE_TRADITIONAL;
-
-		protected static int FILTER_CJK =
-			FILTER_JAPANESE | FILTER_KOREAN | FILTER_CHINESE_SIMPLIFIED
-			| FILTER_CHINESE_TRADITIONAL;
-
-		protected int bestGuess;
-		protected CharsetProber[] charsetProbers = new CharsetProber[PROBERS_NUM];
-		protected string detectedCharset;
+		private readonly CharsetProber[] charsetProbers = new CharsetProber[PROBERS_NUM];
+		private string detectedCharset;
 		protected bool done;
-		protected CharsetProber escCharsetProber;
-		protected bool gotData;
+		private bool gotData;
 
-		internal InputState inputState;
-		protected int languageFilter;
-		protected byte lastChar;
-		protected bool start;
+		private InputState inputState;
+		private byte lastChar;
+		private bool start;
 
 		public virtual void Feed(byte[] buf, int offset, int len)
 		{
@@ -105,47 +84,17 @@ namespace Ude.Core
 					{
 						this.inputState = InputState.Highbyte;
 
-						// kill EscCharsetProber if it is active
-						if (this.escCharsetProber != null)
-						{
-							this.escCharsetProber = null;
-						}
-
 						// start multibyte and singlebyte charset prober
 						if (this.charsetProbers[0] == null) this.charsetProbers[0] = new MBCSGroupProber();
 						if (this.charsetProbers[1] == null) this.charsetProbers[1] = new SBCSGroupProber();
-						//if (charsetProbers[2] == null)
-						//    charsetProbers[2] = new Latin1Prober(); 
 					}
-				}
-				else
-				{
-					if (this.inputState == InputState.PureASCII &&
-					    (buf[i] == 0x1B || (buf[i] == 0x7B && this.lastChar == 0x7E)))
-					{
-						// found escape character or HZ "~{"
-						this.inputState = InputState.EscASCII;
-					}
-					this.lastChar = buf[i];
 				}
 			}
 
-			ProbingState st = ProbingState.NotMe;
+			ProbingState st;
 
 			switch (this.inputState)
 			{
-				case InputState.EscASCII:
-					if (this.escCharsetProber == null)
-					{
-						this.escCharsetProber = new EscCharsetProber();
-					}
-					st = this.escCharsetProber.HandleData(buf, offset, len);
-					if (st == ProbingState.FoundIt)
-					{
-						this.done = true;
-						this.detectedCharset = this.escCharsetProber.GetCharsetName();
-					}
-					break;
 				case InputState.Highbyte:
 					for (int i = 0; i < PROBERS_NUM; i++)
 					{
@@ -163,9 +112,6 @@ namespace Ude.Core
 							}
 						}
 					}
-					break;
-				default:
-					// pure ascii
 					break;
 			}
 		}
@@ -192,14 +138,13 @@ namespace Ude.Core
 
 			if (this.inputState == InputState.Highbyte)
 			{
-				float proberConfidence = 0.0f;
 				float maxProberConfidence = 0.0f;
 				int maxProber = 0;
 				for (int i = 0; i < PROBERS_NUM; i++)
 				{
 					if (this.charsetProbers[i] != null)
 					{
-						proberConfidence = this.charsetProbers[i].GetConfidence();
+						float proberConfidence = this.charsetProbers[i].GetConfidence();
 						if (proberConfidence > maxProberConfidence)
 						{
 							maxProberConfidence = proberConfidence;
@@ -229,10 +174,8 @@ namespace Ude.Core
 			this.start = true;
 			this.detectedCharset = null;
 			this.gotData = false;
-			this.bestGuess = -1;
 			this.inputState = InputState.PureASCII;
 			this.lastChar = 0x00;
-			if (this.escCharsetProber != null) this.escCharsetProber.Reset();
 			for (int i = 0; i < PROBERS_NUM; i++)
 				if (this.charsetProbers[i] != null)
 					this.charsetProbers[i].Reset();

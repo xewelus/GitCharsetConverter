@@ -1,60 +1,31 @@
-using System;
-
 namespace Ude.Core
 {
 	public abstract class SequenceModel
 	{
-		public SequenceModel(
+		protected SequenceModel(
 			byte[] charToOrderMap,
 			byte[] precedenceMatrix,
 			float typicalPositiveRatio,
-			bool keepEnglishLetter,
-			String charsetName)
+			string charsetName)
 		{
 			this.charToOrderMap = charToOrderMap;
 			this.precedenceMatrix = precedenceMatrix;
-			this.typicalPositiveRatio = typicalPositiveRatio;
-			this.keepEnglishLetter = keepEnglishLetter;
-			this.charsetName = charsetName;
+			this.TypicalPositiveRatio = typicalPositiveRatio;
+			this.CharsetName = charsetName;
 		}
 
-		protected String charsetName;
-
 		// [256] table use to find a char's order
-		protected byte[] charToOrderMap;
-
-		// not used            
-		protected bool keepEnglishLetter;
+		private readonly byte[] charToOrderMap;
 
 		// [SAMPLE_SIZE][SAMPLE_SIZE] table to find a 2-char sequence's 
 		// frequency        
-		protected byte[] precedenceMatrix;
+		private readonly byte[] precedenceMatrix;
 
-		// freqSeqs / totalSeqs
-		protected float typicalPositiveRatio;
-
-		public float TypicalPositiveRatio
-		{
-			get
-			{
-				return this.typicalPositiveRatio;
-			}
-		}
-
-		public bool KeepEnglishLetter
-		{
-			get
-			{
-				return this.keepEnglishLetter;
-			}
-		}
+		public float TypicalPositiveRatio { get; }
 
 		public string CharsetName
 		{
-			get
-			{
-				return this.charsetName;
-			}
+			get;
 		}
 
 		public byte GetOrder(byte b)
