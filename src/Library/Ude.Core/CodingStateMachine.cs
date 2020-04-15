@@ -61,32 +61,31 @@ namespace Ude.Core
         {
             // for each byte we get its class, if it is first byte, 
             // we also get byte length
-            int byteCls = model.GetClass(b);
-            if (currentState == SMModel.START) { 
-                currentBytePos = 0;
-                currentCharLen = model.charLenTable[byteCls];
+            int byteCls = this.model.GetClass(b);
+            if (this.currentState == SMModel.START) {
+	            this.currentBytePos = 0;
+	            this.currentCharLen = this.model.charLenTable[byteCls];
             }
             
             // from byte's class and stateTable, we get its next state            
-            currentState = model.stateTable.Unpack(
-                currentState * model.ClassFactor + byteCls);
-            currentBytePos++;
-            return currentState;
+	        this.currentState = this.model.stateTable.Unpack(this.currentState * this.model.ClassFactor + byteCls);
+	        this.currentBytePos++;
+            return this.currentState;
         }
   
         public void Reset() 
-        { 
-            currentState = SMModel.START; 
+        {
+	        this.currentState = SMModel.START; 
         }
 
         public int CurrentCharLen 
         { 
-            get { return currentCharLen; } 
+            get { return this.currentCharLen; } 
         }
 
         public string ModelName 
         { 
-            get { return model.Name; } 
+            get { return this.model.Name; } 
         }
     }
 }

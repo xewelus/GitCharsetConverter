@@ -73,33 +73,32 @@ namespace Ude.Core
 		        this.probers[i++] = pair.Key;
 	        }
 
-            Reset();        
+	        this.Reset();        
         }
 
         public override string GetCharsetName()
         {
-            if (bestGuess == -1) {
-                GetConfidence();
-                if (bestGuess == -1)
-                    bestGuess = 0;
+            if (this.bestGuess == -1) {
+	            this.GetConfidence();
+                if (this.bestGuess == -1) this.bestGuess = 0;
             }
-            return probers[bestGuess].GetCharsetName();
+            return this.probers[this.bestGuess].GetCharsetName();
         }
 
         public override void Reset()
         {
-            activeNum = 0;
-            for (int i = 0; i < probers.Length; i++) {
-                if (probers[i] != null) {
-                   probers[i].Reset();
-                   isActive[i] = true;
-                   ++activeNum;
+	        this.activeNum = 0;
+            for (int i = 0; i < this.probers.Length; i++) {
+                if (this.probers[i] != null) {
+	                this.probers[i].Reset();
+	                this.isActive[i] = true;
+                   ++this.activeNum;
                 } else {
-                   isActive[i] = false;
+	                this.isActive[i] = false;
                 }
             }
-            bestGuess = -1;
-            state = ProbingState.Detecting;
+	        this.bestGuess = -1;
+	        this.state = ProbingState.Detecting;
         }
 
         public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -126,24 +125,24 @@ namespace Ude.Core
             
             ProbingState st = ProbingState.NotMe;
             
-            for (int i = 0; i < probers.Length; i++) {
-                if (!isActive[i])
+            for (int i = 0; i < this.probers.Length; i++) {
+                if (!this.isActive[i])
                     continue;
-                st = probers[i].HandleData(highbyteBuf, 0, hptr);
+                st = this.probers[i].HandleData(highbyteBuf, 0, hptr);
                 if (st == ProbingState.FoundIt) {
-                    bestGuess = i;
-                    state = ProbingState.FoundIt;
+	                this.bestGuess = i;
+	                this.state = ProbingState.FoundIt;
                     break;
                 } else if (st == ProbingState.NotMe) {
-                    isActive[i] = false;
-                    activeNum--;
-                    if (activeNum <= 0) {
-                        state = ProbingState.NotMe;
+	                this.isActive[i] = false;
+	                this.activeNum--;
+                    if (this.activeNum <= 0) {
+	                    this.state = ProbingState.NotMe;
                         break;
                     }
                 }
             }
-            return state;
+            return this.state;
         }
 
         public override float GetConfidence()
@@ -151,18 +150,18 @@ namespace Ude.Core
             float bestConf = 0.0f;
             float cf = 0.0f;
             
-            if (state == ProbingState.FoundIt) {
+            if (this.state == ProbingState.FoundIt) {
                 return 0.99f;
-            } else if (state == ProbingState.NotMe) {
+            } else if (this.state == ProbingState.NotMe) {
                 return 0.01f;
             } else {
                 for (int i = 0; i < PROBERS_NUM; i++) {
-                    if (!isActive[i])
+                    if (!this.isActive[i])
                         continue;
-                    cf = probers[i].GetConfidence();
+                    cf = this.probers[i].GetConfidence();
                     if (bestConf < cf) {
                         bestConf = cf;
-                        bestGuess = i;
+	                    this.bestGuess = i;
                     }
                 }
             }
@@ -172,12 +171,12 @@ namespace Ude.Core
         public override void DumpStatus()
         {
             float cf;
-            GetConfidence();
+	        this.GetConfidence();
             for (int i = 0; i < PROBERS_NUM; i++) {
-                if (!isActive[i]) {
+                if (!this.isActive[i]) {
                   
                 } else {
-                    cf = probers[i].GetConfidence();
+                    cf = this.probers[i].GetConfidence();
                 }
             }
         }

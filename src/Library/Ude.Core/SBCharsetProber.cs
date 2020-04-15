@@ -84,7 +84,7 @@ namespace Ude.Core
             this.model = model;
             this.reversed = reversed;
             this.nameProber = nameProber;
-            Reset();            
+	        this.Reset();            
         }
 
         public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -92,43 +92,40 @@ namespace Ude.Core
             int max = offset + len;
             
             for (int i = offset; i < max; i++) {
-                byte order = model.GetOrder(buf[i]);
+                byte order = this.model.GetOrder(buf[i]);
 
-                if (order < SYMBOL_CAT_ORDER)
-                    totalChar++;
+                if (order < SYMBOL_CAT_ORDER) this.totalChar++;
                     
                 if (order < SAMPLE_SIZE) {
-                    freqChar++;
+	                this.freqChar++;
 
-                    if (lastOrder < SAMPLE_SIZE) {
-                        totalSeqs++;
-                        if (!reversed)
-                            ++(seqCounters[model.GetPrecedence(lastOrder*SAMPLE_SIZE+order)]);
+                    if (this.lastOrder < SAMPLE_SIZE) {
+	                    this.totalSeqs++;
+                        if (!this.reversed)
+                            ++(this.seqCounters[this.model.GetPrecedence(this.lastOrder*SAMPLE_SIZE+order)]);
                         else // reverse the order of the letters in the lookup
-                            ++(seqCounters[model.GetPrecedence(order*SAMPLE_SIZE+lastOrder)]);
+                            ++(this.seqCounters[this.model.GetPrecedence(order*SAMPLE_SIZE+ this.lastOrder)]);
                     }
                 }
-                lastOrder = order;
+	            this.lastOrder = order;
             }
 
-            if (state == ProbingState.Detecting) {
-                if (totalSeqs > SB_ENOUGH_REL_THRESHOLD) {
-                    float cf = GetConfidence();
+            if (this.state == ProbingState.Detecting) {
+                if (this.totalSeqs > SB_ENOUGH_REL_THRESHOLD) {
+                    float cf = this.GetConfidence();
                     if (cf > POSITIVE_SHORTCUT_THRESHOLD)
-                        state = ProbingState.FoundIt;
-                    else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
-                        state = ProbingState.NotMe;
+	                    this.state = ProbingState.FoundIt;
+                    else if (cf < NEGATIVE_SHORTCUT_THRESHOLD) this.state = ProbingState.NotMe;
                 }
             }
-            return state;
+            return this.state;
         }
                 
         public override void DumpStatus()
         {
 	        if (CharsetDetector.NeedConsoleLog)
 	        {
-		        Console.WriteLine("  SBCS: {0} [{1}]", GetConfidence(),
-		                          GetCharsetName());
+		        Console.WriteLine("  SBCS: {0} [{1}]", this.GetConfidence(), this.GetCharsetName());
 	        }
         }
 
@@ -145,9 +142,9 @@ namespace Ude.Core
             // POSITIVE_APPROACH
             float r = 0.0f;
 
-            if (totalSeqs > 0) {
-                r = 1.0f * seqCounters[POSITIVE_CAT] / totalSeqs / model.TypicalPositiveRatio;
-                r = r * freqChar / totalChar;
+            if (this.totalSeqs > 0) {
+                r = 1.0f * this.seqCounters[POSITIVE_CAT] / this.totalSeqs / this.model.TypicalPositiveRatio;
+                r = r * this.freqChar / this.totalChar;
                 if (r >= 1.0f)
                     r = 0.99f;
                 return r;
@@ -157,19 +154,18 @@ namespace Ude.Core
         
         public override void Reset()
         {
-            state = ProbingState.Detecting;
-            lastOrder = 255;
-            for (int i = 0; i < NUMBER_OF_SEQ_CAT; i++)
-                seqCounters[i] = 0;
-            totalSeqs = 0;
-            totalChar = 0;
-            freqChar = 0;
+	        this.state = ProbingState.Detecting;
+	        this.lastOrder = 255;
+            for (int i = 0; i < NUMBER_OF_SEQ_CAT; i++) this.seqCounters[i] = 0;
+	        this.totalSeqs = 0;
+	        this.totalChar = 0;
+	        this.freqChar = 0;
         }
         
         public override string GetCharsetName() 
         {
-            return (nameProber == null) ? model.CharsetName
-                                        : nameProber.GetCharsetName();
+            return (this.nameProber == null) ? this.model.CharsetName
+                                        : this.nameProber.GetCharsetName();
         }
         
     }

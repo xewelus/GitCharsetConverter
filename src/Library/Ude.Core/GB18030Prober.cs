@@ -51,10 +51,10 @@ namespace Ude.Core
 
         public GB18030Prober()
         {
-            lastChar = new byte[2];
-            codingSM = new CodingStateMachine(new GB18030SMModel());
-            analyser = new GB18030DistributionAnalyser();
-            Reset();
+	        this.lastChar = new byte[2];
+	        this.codingSM = new CodingStateMachine(new GB18030SMModel());
+	        this.analyser = new GB18030DistributionAnalyser();
+	        this.Reset();
         }
         
         public override string GetCharsetName()
@@ -69,46 +69,45 @@ namespace Ude.Core
             int max = offset + len;
             
             for (int i = offset; i < max; i++) {
-                codingState = codingSM.NextState(buf[i]);
+                codingState = this.codingSM.NextState(buf[i]);
                 if (codingState == SMModel.ERROR) {
-                    state = ProbingState.NotMe;
+	                this.state = ProbingState.NotMe;
                     break;
                 }
                 if (codingState == SMModel.ITSME) {
-                    state = ProbingState.FoundIt;
+	                this.state = ProbingState.FoundIt;
                     break;
                 }
                 if (codingState == SMModel.START) {
-                    int charLen = codingSM.CurrentCharLen;
+                    int charLen = this.codingSM.CurrentCharLen;
                     if (i == offset) {
-                        lastChar[1] = buf[offset];
-                        analyser.HandleOneChar(lastChar, 0, charLen);
+	                    this.lastChar[1] = buf[offset];
+	                    this.analyser.HandleOneChar(this.lastChar, 0, charLen);
                     } else {
-                        analyser.HandleOneChar(buf, i-1, charLen);
+	                    this.analyser.HandleOneChar(buf, i-1, charLen);
                     }
                 }
             }
 
-            lastChar[0] = buf[max-1];
+	        this.lastChar[0] = buf[max-1];
 
-            if (state == ProbingState.Detecting) {
-                if (analyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                    state = ProbingState.FoundIt;
+            if (this.state == ProbingState.Detecting) {
+                if (this.analyser.GotEnoughData() && this.GetConfidence() > SHORTCUT_THRESHOLD) this.state = ProbingState.FoundIt;
             }
             
-            return state;
+            return this.state;
         }
         
         public override float GetConfidence()
         {
-            return analyser.GetConfidence();
+            return this.analyser.GetConfidence();
         }
         
         public override void Reset()
         {
-            codingSM.Reset(); 
-            state = ProbingState.Detecting;
-            analyser.Reset();
+	        this.codingSM.Reset();
+	        this.state = ProbingState.Detecting;
+	        this.analyser.Reset();
         }
 
     }

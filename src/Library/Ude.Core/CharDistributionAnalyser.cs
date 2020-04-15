@@ -68,8 +68,8 @@ namespace Ude.Core
         protected float typicalDistributionRatio;        
 
         public CharDistributionAnalyser()
-        { 
-            Reset();
+        {
+	        this.Reset();
         }
 
         /// <summary>
@@ -96,21 +96,20 @@ namespace Ude.Core
         public void HandleOneChar(byte[] buf, int offset, int charLen)
         {
             //we only care about 2-bytes character in our distribution analysis
-            int order = (charLen == 2) ? GetOrder(buf, offset) : -1;
+            int order = (charLen == 2) ? this.GetOrder(buf, offset) : -1;
             if (order >= 0) {
-                totalChars++;
-                if (order < charToFreqOrder.Length) { // order is valid
-                    if (512 > charToFreqOrder[order])
-                        freqChars++;
+	            this.totalChars++;
+                if (order < this.charToFreqOrder.Length) { // order is valid
+                    if (512 > this.charToFreqOrder[order]) this.freqChars++;
                 }
             }
         }
 
         public virtual void Reset() 
         {
-            done = false;
-            totalChars = 0;
-            freqChars = 0;
+	        this.done = false;
+	        this.totalChars = 0;
+	        this.freqChars = 0;
         }
         
         /// <summary>
@@ -122,10 +121,10 @@ namespace Ude.Core
             //if we didn't receive any character in our consideration range, or the
             // number of frequent characters is below the minimum threshold, return
             // negative answer
-            if (totalChars <= 0 || freqChars <= MINIMUM_DATA_THRESHOLD)
+            if (this.totalChars <= 0 || this.freqChars <= MINIMUM_DATA_THRESHOLD)
                 return SURE_NO;
-            if (totalChars != freqChars) {
-                float r = freqChars / ((totalChars - freqChars) * typicalDistributionRatio);
+            if (this.totalChars != this.freqChars) {
+                float r = this.freqChars / ((this.totalChars - this.freqChars) * this.typicalDistributionRatio);
                 if (r < SURE_YES)
                     return r;
             }
@@ -137,7 +136,7 @@ namespace Ude.Core
         // certain amount of data is enough
         public bool GotEnoughData() 
         {
-            return totalChars > ENOUGH_DATA_THRESHOLD;
+            return this.totalChars > ENOUGH_DATA_THRESHOLD;
         }
 
     }
@@ -594,8 +593,8 @@ namespace Ude.Core
 
         public GB18030DistributionAnalyser() : base()
         {
-            charToFreqOrder = GB2312_CHAR2FREQ_ORDER;
-            typicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
+	        this.charToFreqOrder = GB2312_CHAR2FREQ_ORDER;
+	        this.typicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
         }
         
         /// <summary>
@@ -1022,8 +1021,8 @@ namespace Ude.Core
 
         public EUCTWDistributionAnalyser()
         {
-            charToFreqOrder = EUCTW_CHAR2FREQ_ORDER;
-            typicalDistributionRatio = EUCTW_TYPICAL_DISTRIBUTION_RATIO;
+	        this.charToFreqOrder = EUCTW_CHAR2FREQ_ORDER;
+	        this.typicalDistributionRatio = EUCTW_TYPICAL_DISTRIBUTION_RATIO;
         }
 
         /// <summary>
@@ -1614,8 +1613,8 @@ namespace Ude.Core
         
         public EUCKRDistributionAnalyser()
         {
-            charToFreqOrder = EUCKR_CHAR2FREQ_ORDER;
-            typicalDistributionRatio = EUCKR_TYPICAL_DISTRIBUTION_RATIO;        
+	        this.charToFreqOrder = EUCKR_CHAR2FREQ_ORDER;
+	        this.typicalDistributionRatio = EUCKR_TYPICAL_DISTRIBUTION_RATIO;        
         }
         
         /// <summary>
@@ -2537,8 +2536,8 @@ namespace Ude.Core
         
         public BIG5DistributionAnalyser()
         {
-            charToFreqOrder = BIG5_CHAR2FREQ_ORDER;
-            typicalDistributionRatio = BIG5_TYPICAL_DISTRIBUTION_RATIO;        
+	        this.charToFreqOrder = BIG5_CHAR2FREQ_ORDER;
+	        this.typicalDistributionRatio = BIG5_TYPICAL_DISTRIBUTION_RATIO;        
         }
         
         /// <summary>
@@ -3108,8 +3107,8 @@ namespace Ude.Core
 		
         public SJISDistributionAnalyser()
         {
-            charToFreqOrder = SJIS_CHAR2FREQ_ORDER;
-            typicalDistributionRatio = SJIS_TYPICAL_DISTRIBUTION_RATIO;        
+	        this.charToFreqOrder = SJIS_CHAR2FREQ_ORDER;
+	        this.typicalDistributionRatio = SJIS_TYPICAL_DISTRIBUTION_RATIO;        
         }
         
         /// <summary>

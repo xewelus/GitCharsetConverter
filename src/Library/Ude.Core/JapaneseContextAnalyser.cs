@@ -157,14 +157,14 @@ namespace Ude.Core
         
         public JapaneseContextAnalyser()
         {
-            Reset();        
+	        this.Reset();        
         }
         
         public float GetConfidence()
         {
             // This is just one way to calculate confidence. It works well for me.
-            if (totalRel > MINIMUM_DATA_THRESHOLD)
-                return ((float)(totalRel - relSample[0]))/totalRel;
+            if (this.totalRel > MINIMUM_DATA_THRESHOLD)
+                return ((float)(this.totalRel - this.relSample[0]))/ this.totalRel;
             else 
                 return DONT_KNOW;
         }
@@ -175,7 +175,7 @@ namespace Ude.Core
             int charLen = 0;
             int max = offset + len;
             
-            if (done)
+            if (this.done)
                 return;
 
             // The buffer we got is byte oriented, and a character may span  
@@ -185,51 +185,50 @@ namespace Ude.Core
             // to record those bytes as well and analyse the character once it 
             // is complete, but since a character will not make much difference,
             // skipping it will simplify our logic and improve performance.
-            for (int i = needToSkipCharNum+offset; i < max; ) {
-                int order = GetOrder(buf, i, out charLen);
+            for (int i = this.needToSkipCharNum+offset; i < max; ) {
+                int order = this.GetOrder(buf, i, out charLen);
                 i += charLen;
                 if (i > max) {
-                    needToSkipCharNum = i - max;
-                    lastCharOrder = -1;
+	                this.needToSkipCharNum = i - max;
+	                this.lastCharOrder = -1;
                 } else {
-                    if (order != -1 && lastCharOrder != -1) {
-                        totalRel ++;
-                        if (totalRel > MAX_REL_THRESHOLD) {
-                            done = true;
+                    if (order != -1 && this.lastCharOrder != -1) {
+	                    this.totalRel ++;
+                        if (this.totalRel > MAX_REL_THRESHOLD) {
+	                        this.done = true;
                             break;
                         }
-                        relSample[jp2CharContext[lastCharOrder, order]]++;
+	                    this.relSample[jp2CharContext[this.lastCharOrder, order]]++;
                    }
-                   lastCharOrder = order;
+	                this.lastCharOrder = order;
                 }
             }
         }
         
         public void HandleOneChar(byte[] buf, int offset, int charLen)
         {
-            if (totalRel > MAX_REL_THRESHOLD) 
-                done = true;
-            if (done)       
+            if (this.totalRel > MAX_REL_THRESHOLD) this.done = true;
+            if (this.done)       
                 return;
      
             // Only 2-bytes characters are of our interest
-            int order = (charLen == 2) ? GetOrder(buf, offset) : -1;
-            if (order != -1 && lastCharOrder != -1) {
-                totalRel++;
+            int order = (charLen == 2) ? this.GetOrder(buf, offset) : -1;
+            if (order != -1 && this.lastCharOrder != -1) {
+	            this.totalRel++;
                 // count this sequence to its category counter
-                relSample[jp2CharContext[lastCharOrder, order]]++;
+	            this.relSample[jp2CharContext[this.lastCharOrder, order]]++;
             }
-            lastCharOrder = order;
+	        this.lastCharOrder = order;
         }
         
         public void Reset()
         {
-            totalRel = 0;
+	        this.totalRel = 0;
             for (int i = 0; i < CATEGORIES_NUM; i++) {
-                relSample[i] = 0;
-                needToSkipCharNum = 0;
-                lastCharOrder = -1;
-                done = false;
+	            this.relSample[i] = 0;
+	            this.needToSkipCharNum = 0;
+	            this.lastCharOrder = -1;
+	            this.done = false;
             }
         }
     
@@ -239,7 +238,7 @@ namespace Ude.Core
     
         public bool GotEnoughData() 
         {
-            return totalRel > ENOUGH_REL_THRESHOLD;
+            return this.totalRel > ENOUGH_REL_THRESHOLD;
         }
         
     }

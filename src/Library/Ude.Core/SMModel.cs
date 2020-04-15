@@ -56,13 +56,13 @@ namespace Ude.Core
         private string name;
         
         public string Name {
-            get { return name;  }
+            get { return this.name;  }
         }
 
         private int classFactor;
 
         public int ClassFactor {
-            get { return classFactor;  }
+            get { return this.classFactor;  }
         }
 
         public SMModel(BitPackage classTable, int classFactor,
@@ -77,7 +77,7 @@ namespace Ude.Core
         
         public int GetClass(byte b)
         {        
-            return classTable.Unpack((int)b);            
+            return this.classTable.Unpack((int)b);            
         }
     }    
 }

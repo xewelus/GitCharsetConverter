@@ -93,8 +93,8 @@ namespace Ude.Core
         
         public int Unpack(int i)
         {
-            return (data[i >> indexShift] >> 
-                    ((i & shiftMask) << bitShift)) & unitMask;
+            return (this.data[i >> this.indexShift] >> 
+                    ((i & this.shiftMask) << this.bitShift)) & this.unitMask;
         }
    }
 }

@@ -55,10 +55,10 @@ namespace Ude.Core
     
         public SJISProber()
         {
-            codingSM = new CodingStateMachine(new SJISSMModel());
-            distributionAnalyser = new SJISDistributionAnalyser();
-            contextAnalyser = new SJISContextAnalyser(); 
-            Reset();
+	        this.codingSM = new CodingStateMachine(new SJISSMModel());
+	        this.distributionAnalyser = new SJISDistributionAnalyser();
+	        this.contextAnalyser = new SJISContextAnalyser();
+	        this.Reset();
         }
         
         public override string GetCharsetName()
@@ -72,46 +72,46 @@ namespace Ude.Core
             int max = offset + len;
             
             for (int i = offset; i < max; i++) {
-                codingState = codingSM.NextState(buf[i]);
+                codingState = this.codingSM.NextState(buf[i]);
                 if (codingState == SMModel.ERROR) {
-                    state = ProbingState.NotMe;
+	                this.state = ProbingState.NotMe;
                     break;
                 }
                 if (codingState == SMModel.ITSME) {
-                    state = ProbingState.FoundIt;
+	                this.state = ProbingState.FoundIt;
                     break;
                 }
                 if (codingState == SMModel.START) {
-                    int charLen = codingSM.CurrentCharLen;
+                    int charLen = this.codingSM.CurrentCharLen;
                     if (i == offset) {
-                        lastChar[1] = buf[offset];
-                        contextAnalyser.HandleOneChar(lastChar, 2-charLen, charLen);
-                        distributionAnalyser.HandleOneChar(lastChar, 0, charLen);
+	                    this.lastChar[1] = buf[offset];
+	                    this.contextAnalyser.HandleOneChar(this.lastChar, 2-charLen, charLen);
+	                    this.distributionAnalyser.HandleOneChar(this.lastChar, 0, charLen);
                     } else {
-                        contextAnalyser.HandleOneChar(buf, i+1-charLen, charLen);
-                        distributionAnalyser.HandleOneChar(buf, i-1, charLen);
+	                    this.contextAnalyser.HandleOneChar(buf, i+1-charLen, charLen);
+	                    this.distributionAnalyser.HandleOneChar(buf, i-1, charLen);
                     }
                 }
-            } 
-            lastChar[0] = buf[max-1];
-            if (state == ProbingState.Detecting)
-                if (contextAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
-                    state = ProbingState.FoundIt;
-            return state;
+            }
+	        this.lastChar[0] = buf[max-1];
+            if (this.state == ProbingState.Detecting)
+                if (this.contextAnalyser.GotEnoughData() && this.GetConfidence() > SHORTCUT_THRESHOLD)
+		                this.state = ProbingState.FoundIt;
+            return this.state;
         }
 
         public override void Reset()
         {
-            codingSM.Reset(); 
-            state = ProbingState.Detecting;
-            contextAnalyser.Reset();
-            distributionAnalyser.Reset();
+	        this.codingSM.Reset();
+	        this.state = ProbingState.Detecting;
+	        this.contextAnalyser.Reset();
+	        this.distributionAnalyser.Reset();
         }
         
         public override float GetConfidence()
         {
-            float contxtCf = contextAnalyser.GetConfidence();
-            float distribCf = distributionAnalyser.GetConfidence();
+            float contxtCf = this.contextAnalyser.GetConfidence();
+            float distribCf = this.distributionAnalyser.GetConfidence();
             return (contxtCf > distribCf ? contxtCf : distribCf);
         }
     }

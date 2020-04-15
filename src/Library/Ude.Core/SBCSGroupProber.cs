@@ -75,12 +75,11 @@ namespace Ude.Core
 
 		    //hebprober.SetModelProbers(hebprober1, hebprober2);
 
+		    this.probers = list.ToArray();
+		    PROBERS_NUM = this.probers.Length;
+		    this.isActive = new bool[this.probers.Length];
 
-		    probers = list.ToArray();
-		    PROBERS_NUM = probers.Length;
-		    isActive = new bool[probers.Length];
-
-		    Reset();
+		    this.Reset();
 		}
 
 		public override ProbingState HandleData(byte[] buf, int offset, int len) 
@@ -95,33 +94,33 @@ namespace Ude.Core
             //recognize languages with English characters.
             byte[] newBuf = FilterWithoutEnglishLetters(buf, offset, len);
             if (newBuf.Length == 0)
-                return state; // Nothing to see here, move on.
+                return this.state; // Nothing to see here, move on.
             
             for (int i = 0; i < PROBERS_NUM; i++) {
-                if (!isActive[i])
+                if (!this.isActive[i])
                     continue;
-                st = probers[i].HandleData(newBuf, 0, newBuf.Length);
+                st = this.probers[i].HandleData(newBuf, 0, newBuf.Length);
                 
                 if (st == ProbingState.FoundIt) {
-                    bestGuess = i;
-                    state = ProbingState.FoundIt;
+	                this.bestGuess = i;
+	                this.state = ProbingState.FoundIt;
                     break;
                 } else if (st == ProbingState.NotMe) {
-                    isActive[i] = false;
-                    activeNum--;
-                    if (activeNum <= 0) {
-                        state = ProbingState.NotMe;
+	                this.isActive[i] = false;
+	                this.activeNum--;
+                    if (this.activeNum <= 0) {
+	                    this.state = ProbingState.NotMe;
                         break;
                     }
                 }
             }
-            return state;
+            return this.state;
         }
 
         public override float GetConfidence()
         {
             float bestConf = 0.0f, cf;
-            switch (state) {
+            switch (this.state) {
             case ProbingState.FoundIt:
                 return 0.99f; //sure yes
             case ProbingState.NotMe:
@@ -129,13 +128,13 @@ namespace Ude.Core
             default:
                 for (int i = 0; i < PROBERS_NUM; i++)
                 {
-                    if (!isActive[i])
+                    if (!this.isActive[i])
                         continue;
-                    cf = probers[i].GetConfidence();
+                    cf = this.probers[i].GetConfidence();
                     if (bestConf < cf)
                     {
                         bestConf = cf;
-                        bestGuess = i;
+	                    this.bestGuess = i;
                     }
                 }
                 break;
@@ -145,29 +144,27 @@ namespace Ude.Core
 
         public override void DumpStatus()
         {
-            float cf = GetConfidence();
+            float cf = this.GetConfidence();
 	        if (CharsetDetector.NeedConsoleLog)
 	        {
 		        Console.WriteLine(" SBCS Group Prober --------begin status");
 	        }
 	        for (int i = 0; i < PROBERS_NUM; i++) {
-	            if (!isActive[i])
+	            if (!this.isActive[i])
 	            {
 		            if (CharsetDetector.NeedConsoleLog)
 		            {
-			            Console.WriteLine(" inactive: [{0}] (i.e. confidence is too low).",
-			                              probers[i].GetCharsetName());
+			            Console.WriteLine(" inactive: [{0}] (i.e. confidence is too low).", this.probers[i].GetCharsetName());
 		            }
 	            }
 	            else
 	            {
-		            probers[i].DumpStatus();
+		            this.probers[i].DumpStatus();
 	            }
             }
 	        if (CharsetDetector.NeedConsoleLog)
 	        {
-		        Console.WriteLine(" SBCS Group found best match [{0}] confidence {1}.",
-		                          probers[bestGuess].GetCharsetName(), cf);
+		        Console.WriteLine(" SBCS Group found best match [{0}] confidence {1}.", this.probers[this.bestGuess].GetCharsetName(), cf);
 	        }
         }
 
@@ -175,28 +172,27 @@ namespace Ude.Core
         {
             int activeNum = 0;
             for (int i = 0; i < PROBERS_NUM; i++) {
-                if (probers[i] != null) {
-                    probers[i].Reset();
-                    isActive[i] = true;
+                if (this.probers[i] != null) {
+	                this.probers[i].Reset();
+	                this.isActive[i] = true;
                     activeNum++;
                 } else {
-                    isActive[i] = false;
+	                this.isActive[i] = false;
                 }
             }
-            bestGuess = -1;
-            state = ProbingState.Detecting;
+	        this.bestGuess = -1;
+	        this.state = ProbingState.Detecting;
         }
 
         public override string GetCharsetName()
         {
             //if we have no answer yet
-            if (bestGuess == -1) {
-                GetConfidence();
+            if (this.bestGuess == -1) {
+	            this.GetConfidence();
                 //no charset seems positive
-                if (bestGuess == -1)
-                    bestGuess = 0;
+                if (this.bestGuess == -1) this.bestGuess = 0;
             }
-            return probers[bestGuess].GetCharsetName();
+            return this.probers[this.bestGuess].GetCharsetName();
         }
 
     }

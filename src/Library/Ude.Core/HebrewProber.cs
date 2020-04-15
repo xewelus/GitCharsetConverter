@@ -176,13 +176,13 @@ namespace Ude.Core
                 
         public HebrewProber()
         {
-            Reset();
+	        this.Reset();
         }
          
         public void SetModelProbers(CharsetProber logical, CharsetProber visual) 
-        { 
-            logicalProber = logical; 
-            visualProber = visual; 
+        {
+	        this.logicalProber = logical;
+	        this.visualProber = visual; 
         }
         
         /** 
@@ -213,7 +213,7 @@ namespace Ude.Core
         public override ProbingState HandleData(byte[] buf, int offset, int len)
         {
             // Both model probers say it's not them. No reason to continue.
-            if (GetState() == ProbingState.NotMe)
+            if (this.GetState() == ProbingState.NotMe)
                 return ProbingState.NotMe;
 
             int max = offset + len;
@@ -225,22 +225,21 @@ namespace Ude.Core
                 // a word just ended
                 if (b == 0x20) {
                     // *(curPtr-2) was not a space so prev is not a 1 letter word
-                    if (beforePrev != 0x20) {
+                    if (this.beforePrev != 0x20) {
                         // case (1) [-2:not space][-1:final letter][cur:space]
-                        if (IsFinal(prev)) 
-                            finalCharLogicalScore++;
+                        if (IsFinal(this.prev))
+	                        this.finalCharLogicalScore++;
                         // case (2) [-2:not space][-1:Non-Final letter][cur:space]                        
-                        else if (IsNonFinal(prev))
-                            finalCharVisualScore++;
+                        else if (IsNonFinal(this.prev)) this.finalCharVisualScore++;
                     }
                     
                 } else {
                     // case (3) [-2:space][-1:final letter][cur:not space]
-                    if ((beforePrev == 0x20) && (IsFinal(prev)) && (b != ' ')) 
-                        ++finalCharVisualScore;
+                    if ((this.beforePrev == 0x20) && (IsFinal(this.prev)) && (b != ' ')) 
+                        ++this.finalCharVisualScore;
                 }
-                beforePrev = prev;
-                prev = b;
+	            this.beforePrev = this.prev;
+	            this.prev = b;
             }
 
             // Forever detecting, till the end or until both model probers 
@@ -252,14 +251,14 @@ namespace Ude.Core
         public override string GetCharsetName()
         {
             // If the final letter score distance is dominant enough, rely on it.
-            int finalsub = finalCharLogicalScore - finalCharVisualScore;
+            int finalsub = this.finalCharLogicalScore - this.finalCharVisualScore;
             if (finalsub >= MIN_FINAL_CHAR_DISTANCE) 
                 return LOGICAL_HEBREW_NAME;
             if (finalsub <= -(MIN_FINAL_CHAR_DISTANCE))
                 return VISUAL_HEBREW_NAME;
 
             // It's not dominant enough, try to rely on the model scores instead.
-            float modelsub = logicalProber.GetConfidence() - visualProber.GetConfidence();
+            float modelsub = this.logicalProber.GetConfidence() - this.visualProber.GetConfidence();
             if (modelsub > MIN_MODEL_DISTANCE)
                 return LOGICAL_HEBREW_NAME;
             if (modelsub < -(MIN_MODEL_DISTANCE))
@@ -275,17 +274,16 @@ namespace Ude.Core
 
         public override void Reset()
         {
-            finalCharLogicalScore = 0;
-            finalCharVisualScore = 0;
-            prev = 0x20;
-            beforePrev = 0x20;
+	        this.finalCharLogicalScore = 0;
+	        this.finalCharVisualScore = 0;
+	        this.prev = 0x20;
+	        this.beforePrev = 0x20;
         }
 
         public override ProbingState GetState() 
         {
             // Remain active as long as any of the model probers are active.
-            if (logicalProber.GetState() == ProbingState.NotMe && 
-                visualProber.GetState() == ProbingState.NotMe)
+            if (this.logicalProber.GetState() == ProbingState.NotMe && this.visualProber.GetState() == ProbingState.NotMe)
                 return ProbingState.NotMe;
             return ProbingState.Detecting;
         }
@@ -294,8 +292,7 @@ namespace Ude.Core
         {
 	        if (CharsetDetector.NeedConsoleLog)
 	        {
-		        Console.WriteLine("  HEB: {0} - {1} [Logical-Visual score]",
-		                          finalCharLogicalScore, finalCharVisualScore);
+		        Console.WriteLine("  HEB: {0} - {1} [Logical-Visual score]", this.finalCharLogicalScore, this.finalCharVisualScore);
 	        }
         }
         

@@ -50,9 +50,9 @@ namespace Ude.Core
 
         public UTF8Prober()
         {
-            numOfMBChar = 0; 
-            codingSM = new CodingStateMachine(new UTF8SMModel());
-            Reset();
+	        this.numOfMBChar = 0;
+	        this.codingSM = new CodingStateMachine(new UTF8SMModel());
+	        this.Reset();
         }
         
         public override string GetCharsetName() {
@@ -61,9 +61,9 @@ namespace Ude.Core
 
         public override void Reset()
         {
-            codingSM.Reset();
-            numOfMBChar = 0;
-            state = ProbingState.Detecting;
+	        this.codingSM.Reset();
+	        this.numOfMBChar = 0;
+	        this.state = ProbingState.Detecting;
         }
 
         public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -73,28 +73,27 @@ namespace Ude.Core
             
             for (int i = offset; i < max; i++) {
 
-                codingState = codingSM.NextState(buf[i]);
+                codingState = this.codingSM.NextState(buf[i]);
 
                 if (codingState == SMModel.ERROR) {
-                    state = ProbingState.NotMe;
+	                this.state = ProbingState.NotMe;
                     break;
                 }
 
                 if (codingState == SMModel.ITSME) {
-                    state = ProbingState.FoundIt;
+	                this.state = ProbingState.FoundIt;
                     break;
                 }
 
                 if (codingState == SMModel.START) {
-                    if (codingSM.CurrentCharLen >= 2)
-                        numOfMBChar++;
+                    if (this.codingSM.CurrentCharLen >= 2) this.numOfMBChar++;
                 }
             }
 
-            if (state == ProbingState.Detecting)
-                if (GetConfidence() > SHORTCUT_THRESHOLD)
-                    state = ProbingState.FoundIt;
-            return state;
+            if (this.state == ProbingState.Detecting)
+                if (this.GetConfidence() > SHORTCUT_THRESHOLD)
+		                this.state = ProbingState.FoundIt;
+            return this.state;
         }
 
         public override float GetConfidence()
@@ -102,8 +101,8 @@ namespace Ude.Core
             float unlike = 0.99f;
             float confidence = 0.0f;
             
-            if (numOfMBChar < 6) {
-                for (int i = 0; i < numOfMBChar; i++)
+            if (this.numOfMBChar < 6) {
+                for (int i = 0; i < this.numOfMBChar; i++)
                     unlike *= ONE_CHAR_PROB;
                 confidence = 1.0f - unlike;
             } else {

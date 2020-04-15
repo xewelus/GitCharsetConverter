@@ -86,7 +86,7 @@ namespace Ude.Core
         
         public virtual ProbingState GetState()
         {
-            return state;
+            return this.state;
         }
 
         public virtual void SetOption()

@@ -114,7 +114,7 @@ namespace Ude.Core
         
         public Latin1Prober()
         {
-            Reset();
+	        this.Reset();
         }
 
         public override string GetCharsetName() 
@@ -124,10 +124,9 @@ namespace Ude.Core
         
         public override void Reset()
         {
-            state = ProbingState.Detecting;
-            lastCharClass = OTH;
-            for (int i = 0; i < FREQ_CAT_NUM; i++)
-                freqCounter[i] = 0;
+	        this.state = ProbingState.Detecting;
+	        this.lastCharClass = OTH;
+            for (int i = 0; i < FREQ_CAT_NUM; i++) this.freqCounter[i] = 0;
         }
         
         public override ProbingState HandleData(byte[] buf, int offset, int len)
@@ -137,33 +136,33 @@ namespace Ude.Core
             
             for (int i = 0; i < newbuf.Length; i++) {
                 charClass = Latin1_CharToClass[newbuf[i]];
-                freq = Latin1ClassModel[lastCharClass * CLASS_NUM + charClass];
+                freq = Latin1ClassModel[this.lastCharClass * CLASS_NUM + charClass];
                 if (freq == 0) {
-                  state = ProbingState.NotMe;
+	                this.state = ProbingState.NotMe;
                   break;
                 }
-                freqCounter[freq]++;
-                lastCharClass = charClass;
+	            this.freqCounter[freq]++;
+	            this.lastCharClass = charClass;
             }
-            return state;
+            return this.state;
         }
 
         public override float GetConfidence()
         {
-            if (state == ProbingState.NotMe)
+            if (this.state == ProbingState.NotMe)
                 return 0.01f;
             
             float confidence = 0.0f;
             int total = 0;
             for (int i = 0; i < FREQ_CAT_NUM; i++) {
-                total += freqCounter[i];
+                total += this.freqCounter[i];
             }
             
             if (total <= 0) {
                 confidence = 0.0f;
             } else {
-                confidence = freqCounter[3] * 1.0f / total;
-                confidence -= freqCounter[1] * 20.0f / total;
+                confidence = this.freqCounter[3] * 1.0f / total;
+                confidence -= this.freqCounter[1] * 20.0f / total;
             }
             
             // lower the confidence of latin1 so that other more accurate detector 
@@ -175,8 +174,7 @@ namespace Ude.Core
         {
 	        if (CharsetDetector.NeedConsoleLog)
 	        {
-		        Console.WriteLine(" Latin1Prober: {0} [{1}]",
-		                          GetConfidence(), GetCharsetName());
+		        Console.WriteLine(" Latin1Prober: {0} [{1}]", this.GetConfidence(), this.GetCharsetName());
 	        }
         }
     }

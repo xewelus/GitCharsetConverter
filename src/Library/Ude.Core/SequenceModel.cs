@@ -53,20 +53,20 @@ namespace Ude.Core
         protected float typicalPositiveRatio;
         
         public float TypicalPositiveRatio {
-            get { return typicalPositiveRatio; }
+            get { return this.typicalPositiveRatio; }
         }
         
         // not used            
         protected bool keepEnglishLetter;
         
         public bool KeepEnglishLetter {
-            get { return keepEnglishLetter; }
+            get { return this.keepEnglishLetter; }
         }
         
         protected String charsetName;
 
         public string CharsetName {
-            get { return charsetName; }
+            get { return this.charsetName; }
         }
         
         public SequenceModel(
@@ -85,12 +85,12 @@ namespace Ude.Core
         
         public byte GetOrder(byte b)
         {
-            return charToOrderMap[b];
+            return this.charToOrderMap[b];
         }
         
         public byte GetPrecedence(int pos)
         {
-            return precedenceMatrix[pos];
+            return this.precedenceMatrix[pos];
         }
         
     }

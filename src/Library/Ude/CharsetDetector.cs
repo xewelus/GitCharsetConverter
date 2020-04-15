@@ -73,13 +73,7 @@ namespace Ude
     {
 	    public static bool NeedConsoleLog = false;
 
-        private string charset;
-        
-        private float confidence;
-        
-        //public event DetectorFinished Finished;
-        
-        public CharsetDetector() : base(FILTER_ALL)
+		public CharsetDetector() : base(FILTER_ALL)
         {
             
         }
@@ -88,43 +82,33 @@ namespace Ude
         { 
             byte[] buff = new byte[1024];
             int read;
-            while ((read = stream.Read(buff, 0, buff.Length)) > 0 && !done)
+            while ((read = stream.Read(buff, 0, buff.Length)) > 0 && !this.done)
             {
-                Feed(buff, 0, read);
+	            this.Feed(buff, 0, read);
             }
         }
         
         public bool IsDone() 
         {
-            return done;
+            return this.done;
         }
         
         public override void Reset()
         {
-            this.charset = null;
-            this.confidence = 0.0f;
+            this.Charset = null;
+            this.Confidence = 0.0f;
             base.Reset();
         }
-        
-        public string Charset {
-            get { return charset; }
-        }
 
-        public float Confidence {
-            get { return confidence; }
-        }
-        
-        protected override void Report(string charset, float confidence)
+		public string Charset { get; private set; }
+
+		public float Confidence { get; private set; }
+
+		protected override void Report(string charset, float confidence)
         {
-            this.charset = charset;
-            this.confidence = confidence;
-//            if (Finished != null) {
-//                Finished(charset, confidence);
-//            }
+            this.Charset = charset;
+            this.Confidence = confidence;
         }
     }
-    
-    //public delegate void DetectorFinished(string charset, float confidence);
-
 }
 
