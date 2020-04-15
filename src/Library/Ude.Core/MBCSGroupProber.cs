@@ -5,18 +5,18 @@ namespace Ude.Core
 	/// <summary>
 	/// Multi-byte charsets probers
 	/// </summary>
-	public class MBCSGroupProber : CharsetProber
+	public sealed class MBCSGroupProber : CharsetProber
 	{
 		public MBCSGroupProber()
 		{
-			this.probersByName = new Dictionary<CharsetProber, string>();
-			this.probersByName.Add(new UTF8Prober(), "UTF8");
+			Dictionary<CharsetProber, string> probersByName = new Dictionary<CharsetProber, string>();
+			probersByName.Add(new UTF8Prober(), "UTF8");
 
-			PROBERS_NUM = this.probersByName.Count;
-			this.isActive = new bool[this.probersByName.Count];
-			this.probers = new CharsetProber[this.probersByName.Count];
+			PROBERS_NUM = probersByName.Count;
+			this.isActive = new bool[probersByName.Count];
+			this.probers = new CharsetProber[probersByName.Count];
 			int i = 0;
-			foreach (KeyValuePair<CharsetProber, string> pair in this.probersByName)
+			foreach (KeyValuePair<CharsetProber, string> pair in probersByName)
 			{
 				this.probers[i++] = pair.Key;
 			}
@@ -29,7 +29,6 @@ namespace Ude.Core
 		private int bestGuess;
 		private readonly bool[] isActive; // = new bool[PROBERS_NUM];
 		private readonly CharsetProber[] probers; // = new CharsetProber[PROBERS_NUM];
-		private readonly Dictionary<CharsetProber, string> probersByName;
 
 		public override string GetCharsetName()
 		{
@@ -88,13 +87,11 @@ namespace Ude.Core
 				}
 			}
 
-			ProbingState st = ProbingState.NotMe;
-
 			for (int i = 0; i < this.probers.Length; i++)
 			{
-				if (!this.isActive[i])
-					continue;
-				st = this.probers[i].HandleData(highbyteBuf, 0, hptr);
+				if (!this.isActive[i]) continue;
+
+				ProbingState st = this.probers[i].HandleData(highbyteBuf, 0, hptr);
 				if (st == ProbingState.FoundIt)
 				{
 					this.bestGuess = i;
@@ -118,7 +115,6 @@ namespace Ude.Core
 		public override float GetConfidence()
 		{
 			float bestConf = 0.0f;
-			float cf = 0.0f;
 
 			if (this.state == ProbingState.FoundIt)
 			{
@@ -132,7 +128,7 @@ namespace Ude.Core
 			{
 				if (!this.isActive[i])
 					continue;
-				cf = this.probers[i].GetConfidence();
+				float cf = this.probers[i].GetConfidence();
 				if (bestConf < cf)
 				{
 					bestConf = cf;
@@ -144,16 +140,12 @@ namespace Ude.Core
 
 		public override void DumpStatus()
 		{
-			float cf;
 			this.GetConfidence();
 			for (int i = 0; i < PROBERS_NUM; i++)
 			{
-				if (!this.isActive[i])
+				if (this.isActive[i])
 				{
-				}
-				else
-				{
-					cf = this.probers[i].GetConfidence();
+					this.probers[i].GetConfidence();
 				}
 			}
 		}

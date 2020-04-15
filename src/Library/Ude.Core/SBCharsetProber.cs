@@ -2,15 +2,14 @@ using System;
 
 namespace Ude.Core
 {
-	public class SingleByteCharSetProber : CharsetProber
+	public sealed class SingleByteCharSetProber : CharsetProber
 	{
 		public SingleByteCharSetProber(SequenceModel model)
 			: this(model, false, null)
 		{
 		}
 
-		public SingleByteCharSetProber(SequenceModel model, bool reversed,
-			CharsetProber nameProber)
+		private SingleByteCharSetProber(SequenceModel model, bool reversed, CharsetProber nameProber)
 		{
 			this.model = model;
 			this.reversed = reversed;
@@ -25,7 +24,6 @@ namespace Ude.Core
 		private const int SYMBOL_CAT_ORDER = 250;
 		private const int NUMBER_OF_SEQ_CAT = 4;
 		private const int POSITIVE_CAT = NUMBER_OF_SEQ_CAT - 1;
-		private const int NEGATIVE_CAT = 0;
 
 		// characters that fall in our sampling range
 		int freqChar;
@@ -33,7 +31,7 @@ namespace Ude.Core
 		// char order of last character
 		byte lastOrder;
 
-		protected SequenceModel model;
+		private readonly SequenceModel model;
 
 		// Optional auxiliary prober for name decision. created and destroyed by the GroupProber
 		readonly CharsetProber nameProber;
@@ -103,11 +101,10 @@ namespace Ude.Core
 			return 0.01f;
 			*/
 			// POSITIVE_APPROACH
-			float r = 0.0f;
 
 			if (this.totalSeqs > 0)
 			{
-				r = 1.0f * this.seqCounters[POSITIVE_CAT] / this.totalSeqs / this.model.TypicalPositiveRatio;
+				float r = 1.0f * this.seqCounters[POSITIVE_CAT] / this.totalSeqs / this.model.TypicalPositiveRatio;
 				r = r * this.freqChar / this.totalChar;
 				if (r >= 1.0f)
 					r = 0.99f;

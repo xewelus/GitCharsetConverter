@@ -16,14 +16,6 @@ namespace Ude.Core
 
 		public int CurrentCharLen { get; private set; }
 
-		public string ModelName
-		{
-			get
-			{
-				return this.model.Name;
-			}
-		}
-
 		public int NextState(byte b)
 		{
 			// for each byte we get its class, if it is first byte, 

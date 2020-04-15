@@ -5,14 +5,12 @@ namespace Ude.Core
 	/// </summary>
 	public abstract class SMModel
 	{
-		protected SMModel(BitPackage classTable, int classFactor,
-			BitPackage stateTable, int[] charLenTable, string name)
+		protected SMModel(BitPackage classTable, int classFactor, BitPackage stateTable, int[] charLenTable)
 		{
 			this.classTable = classTable;
 			this.ClassFactor = classFactor;
 			this.stateTable = stateTable;
 			this.charLenTable = charLenTable;
-			this.Name = name;
 		}
 
 		public const int START = 0;
@@ -22,11 +20,6 @@ namespace Ude.Core
 		private readonly BitPackage classTable;
 
 		public readonly BitPackage stateTable;
-
-		public string Name
-		{
-			get;
-		}
 
 		public int ClassFactor { get; }
 

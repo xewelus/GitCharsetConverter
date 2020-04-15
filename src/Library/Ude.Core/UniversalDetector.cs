@@ -12,7 +12,6 @@ namespace Ude.Core
 		{
 			this.start = true;
 			this.inputState = InputState.PureASCII;
-			this.lastChar = 0x00;
 		}
 
 		private const float MINIMUM_THRESHOLD = 0.20f;
@@ -24,7 +23,6 @@ namespace Ude.Core
 		private bool gotData;
 
 		private InputState inputState;
-		private byte lastChar;
 		private bool start;
 
 		public virtual void Feed(byte[] buf, int offset, int len)
@@ -91,8 +89,6 @@ namespace Ude.Core
 				}
 			}
 
-			ProbingState st;
-
 			switch (this.inputState)
 			{
 				case InputState.Highbyte:
@@ -100,7 +96,7 @@ namespace Ude.Core
 					{
 						if (this.charsetProbers[i] != null)
 						{
-							st = this.charsetProbers[i].HandleData(buf, offset, len);
+							ProbingState st = this.charsetProbers[i].HandleData(buf, offset, len);
 #if DEBUG
 							this.charsetProbers[i].DumpStatus();
 #endif
@@ -175,7 +171,6 @@ namespace Ude.Core
 			this.detectedCharset = null;
 			this.gotData = false;
 			this.inputState = InputState.PureASCII;
-			this.lastChar = 0x00;
 			for (int i = 0; i < PROBERS_NUM; i++)
 				if (this.charsetProbers[i] != null)
 					this.charsetProbers[i].Reset();

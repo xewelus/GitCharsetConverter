@@ -10,6 +10,7 @@ namespace Ude.Core
 			List<CharsetProber> list = new List<CharsetProber>();
 			list.Add(new SingleByteCharSetProber(new Win1251Model()));
 			list.Add(new SingleByteCharSetProber(new Ibm866Model()));
+			//list.Add(new SingleByteCharSetProber(new Koi8rModel()));
 
 			this.probers = list.ToArray();
 			PROBERS_NUM = this.probers.Length;

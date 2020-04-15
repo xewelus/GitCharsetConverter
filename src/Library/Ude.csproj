@@ -67,7 +67,6 @@
     <Compile Include="Ude.Core\LangCyrillicModel.cs" />
     <Compile Include="Ude\ICharsetDetector.cs" />
     <Compile Include="Ude\CharsetDetector.cs" />
-    <Compile Include="Ude.Core\Charsets.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,8 +19,6 @@ namespace Ude.Core
 		private const byte CAPITAL_Z = 0x5A;
 		private const byte SMALL_A = 0x61;
 		private const byte SMALL_Z = 0x7A;
-		private const byte LESS_THAN = 0x3C;
-		private const byte GREATER_THAN = 0x3E;
 
 		protected ProbingState state;
 
@@ -44,22 +42,10 @@ namespace Ude.Core
 
 		public abstract float GetConfidence();
 
-		public virtual ProbingState GetState()
-		{
-			return this.state;
-		}
-
 		public virtual void DumpStatus()
 		{
 		}
 
-		//
-		// Helper functions used in the Latin1 and Group probers
-		//
-		/// <summary>
-		///  
-		/// </summary>
-		/// <returns>filtered buffer</returns>
 		protected static byte[] FilterWithoutEnglishLetters(byte[] buf, int offset, int len)
 		{
 			byte[] result;
@@ -94,56 +80,6 @@ namespace Ude.Core
 				}
 
 				if (meetMSB && cur > prev)
-					ms.Write(buf, prev, cur - prev);
-				ms.SetLength(ms.Position);
-				result = ms.ToArray();
-			}
-			return result;
-		}
-
-		/// <summary>
-		/// Do filtering to reduce load to probers (Remove ASCII symbols, 
-		/// collapse spaces). This filter applies to all scripts which contain 
-		/// both English characters and upper ASCII characters.
-		/// </summary>
-		/// <returns>a filtered copy of the input buffer</returns>
-		protected static byte[] FilterWithEnglishLetters(byte[] buf, int offset, int len)
-		{
-			byte[] result;
-
-			using (MemoryStream ms = new MemoryStream(buf.Length))
-			{
-				bool inTag = false;
-				int max = offset + len;
-				int prev = offset;
-				int cur = offset;
-
-				while (cur < max)
-				{
-					byte b = buf[cur];
-
-					if (b == GREATER_THAN)
-						inTag = false;
-					else if (b == LESS_THAN)
-						inTag = true;
-
-					// it's ascii, but it's not a letter
-					if ((b & 0x80) == 0 && (b < CAPITAL_A || b > SMALL_Z
-					                                      || (b > CAPITAL_Z && b < SMALL_A)))
-					{
-						if (cur > prev && !inTag)
-						{
-							ms.Write(buf, prev, cur - prev);
-							ms.WriteByte(SPACE);
-						}
-						prev = cur + 1;
-					}
-					cur++;
-				}
-
-				// If the current segment contains more than just a symbol 
-				// and it is not inside a tag then keep it.
-				if (!inTag && cur > prev)
 					ms.Write(buf, prev, cur - prev);
 				ms.SetLength(ms.Position);
 				result = ms.ToArray();
