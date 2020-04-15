@@ -587,7 +587,7 @@ namespace Ude.Core
         *******************************************************************************/
         };
 
-        public GB18030DistributionAnalyser() : base()
+        public GB18030DistributionAnalyser()
         {
 	        this.charToFreqOrder = GB2312_CHAR2FREQ_ORDER;
 	        this.typicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
@@ -3132,11 +3132,7 @@ namespace Ude.Core
 
     public class EUCJPDistributionAnalyser : SJISDistributionAnalyser
     {
-        public EUCJPDistributionAnalyser() : base()
-        {
-        }
-        
-        /// <summary>
+	    /// <summary>
         /// first  byte range: 0xa0 -- 0xfe
         ///  second byte range: 0xa1 -- 0xfe
         /// no validation needed here. State machine has done that

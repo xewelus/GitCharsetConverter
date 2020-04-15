@@ -51,17 +51,7 @@ namespace Ude
         
         public const string UTF32_LE = "UTF-32LE";
 
-        /// <summary>
-        /// Unusual BOM (3412 order)
-        /// </summary>
-        public const string UCS4_3412 = "X-ISO-10646-UCS-4-3412";
-        
-        /// <summary>
-        /// Unusual BOM (2413 order)
-        /// </summary>
-        public const string UCS4_2413 = "X-ISO-10646-UCS-4-2413";
-       
-        /// <summary>
+	    /// <summary>
         /// Cyrillic (based on bulgarian and russian data)
         /// </summary>
         public const string WIN1251 = "windows-1251";
@@ -70,13 +60,8 @@ namespace Ude
         /// Latin-1, almost identical to ISO-8859-1
         /// </summary>
         public const string WIN1252 = "windows-1252";
-        
-        /// <summary>
-        /// Greek
-        /// </summary>
-        public const string WIN1253 = "windows-1253";
-        
-        /// <summary>
+
+	    /// <summary>
         /// Logical hebrew (includes ISO-8859-8-I and most of x-mac-hebrew)
         /// </summary>
         public const string WIN1255 = "windows-1255";
@@ -98,10 +83,8 @@ namespace Ude
         public const string GB18030 = "gb18030";
 
         public const string ISO2022_JP = "ISO-2022-JP";
-        
-        public const string ISO2022_CN = "ISO-2022-CN";
-        
-        public const string ISO2022_KR = "ISO-2022-KR";
+
+	    public const string ISO2022_KR = "ISO-2022-KR";
         
         /// <summary>
         /// Simplified chinese
