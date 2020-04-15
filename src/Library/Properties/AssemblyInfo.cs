@@ -1,8 +1,3 @@
-// AssemblyInfo.cs created with MonoDevelop
-//
-// Author:
-//    Rudi Pettazzi <rudi.pettazzi@gmail.com>
-//
 using System.Reflection;
 
 [assembly: AssemblyTitle("Ude")]
@@ -16,6 +11,3 @@ using System.Reflection;
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
-
-
-
