@@ -57,9 +57,13 @@ namespace Converter
 			Application.DoEvents();
 		}
 
+		private static bool Show_Win1251 = false;
 		private void analyzer_Win1251Finded(string file, CharsetDetector detector)
 		{
-			return;
+			if (!Show_Win1251)
+			{
+				return;
+			}
 
 			ListViewItem listItem = this.lvFiles.Items.Add(file);
 			listItem.SubItems.Add(detector.Charset);

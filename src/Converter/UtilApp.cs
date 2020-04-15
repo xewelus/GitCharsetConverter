@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using Ude;
 
 namespace Converter
 {
 	public static class UtilApp
 	{
-		public static bool LOG_ENABLED = true;
-		public static bool ONLY_COMMIT_FILES = false;
+		private static bool LOG_ENABLED = true;
+		private static bool ONLY_COMMIT_FILES = false;
 		private static string logPrefix = new string(' ', 7);
 		public static void Process(string[] args)
 		{

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Ude;
+using JetBrains.Annotations;
 
 namespace Converter
 {
@@ -12,6 +12,7 @@ namespace Converter
 	{
 		public static class ConsoleRedirect
 		{
+			[UsedImplicitly]
 			public static void Test()
 			{
 				Process process = new Process();
@@ -49,12 +50,14 @@ namespace Converter
 			}
 		}
 
+		[UsedImplicitly]
 		private static void TestConvert()
 		{
 			string file = @"D:\git\testenc2\windows-1251.txt";
 			UtilApp.ConvertFile(file);
 		}
 
+		[UsedImplicitly]
 		public static void ProcessFolder()
 		{
 			string folder = ConfigurationManager.AppSettings["RepositoryFolder"];

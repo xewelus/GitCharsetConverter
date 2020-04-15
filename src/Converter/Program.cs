@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Ude;
 
 namespace Converter
 {
 	static class Program
 	{
+		private static bool ShowMainForm = false;
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -31,9 +29,15 @@ namespace Converter
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			//Application.Run(new MainForm());
-			//Tests.ConsoleRedirect.Test();
-			Application.Run(new ConsoleForm());
+			if (ShowMainForm)
+			{
+				Application.Run(new MainForm());
+				//Tests.ConsoleRedirect.Test();
+			}
+			else
+			{
+				Application.Run(new ConsoleForm());
+			}
 		}
 
 		private static void OnApplicationOnThreadException(object sender, ThreadExceptionEventArgs args)

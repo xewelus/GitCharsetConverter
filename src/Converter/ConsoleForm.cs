@@ -341,13 +341,6 @@ namespace Converter
 			}
 		}
 
-		private class RewriteLinesAnalyzer : OutputHandler
-		{
-			protected override void InternalHandle(string text)
-			{
-			}
-		}
-
 		private class LinesAnalyzer : OutputHandler
 		{
 			public List<string> Lines = new List<string>();
