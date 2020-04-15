@@ -49,11 +49,6 @@ namespace Ude
 
 		public const string ISO2022_KR = "ISO-2022-KR";
 
-		/// <summary>
-		/// Simplified chinese
-		/// </summary>
-		public const string HZ_GB_2312 = "HZ-GB-2312";
-
 		public const string SHIFT_JIS = "Shift-JIS";
 
 		public const string MAC_CYRILLIC = "x-mac-cyrillic";
@@ -65,30 +60,8 @@ namespace Ude
 		public const string IBM866 = "IBM866";
 
 		/// <summary>
-		/// East-Europe. Disabled because too similar to windows-1252 
-		/// (latin-1). Should use tri-grams models to discriminate between
-		/// these two charsets.
-		/// </summary>
-		public const string ISO8859_2 = "ISO-8859-2";
-
-		/// <summary>
-		/// Cyrillic
-		/// </summary>
-		public const string ISO8859_5 = "ISO-8859-5";
-
-		/// <summary>
 		/// Greek
 		/// </summary>
 		public const string ISO_8859_7 = "ISO-8859-7";
-
-		/// <summary>
-		/// Visual Hebrew
-		/// </summary>
-		public const string ISO8859_8 = "ISO-8859-8";
-
-		/// <summary>
-		/// Thai. This recognizer is not enabled yet. 
-		/// </summary>
-		public const string TIS620 = "TIS620";
 	}
 }

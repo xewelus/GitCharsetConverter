@@ -11,18 +11,10 @@ namespace Ude.Core
 			this.model = model;
 		}
 
-		private int currentBytePos;
-		private int currentCharLen;
 		private int currentState;
 		private readonly SMModel model;
 
-		public int CurrentCharLen
-		{
-			get
-			{
-				return this.currentCharLen;
-			}
-		}
+		public int CurrentCharLen { get; private set; }
 
 		public string ModelName
 		{
@@ -39,13 +31,11 @@ namespace Ude.Core
 			int byteCls = this.model.GetClass(b);
 			if (this.currentState == SMModel.START)
 			{
-				this.currentBytePos = 0;
-				this.currentCharLen = this.model.charLenTable[byteCls];
+				this.CurrentCharLen = this.model.charLenTable[byteCls];
 			}
 
 			// from byte's class and stateTable, we get its next state            
 			this.currentState = this.model.stateTable.Unpack(this.currentState * this.model.ClassFactor + byteCls);
-			this.currentBytePos++;
 			return this.currentState;
 		}
 
