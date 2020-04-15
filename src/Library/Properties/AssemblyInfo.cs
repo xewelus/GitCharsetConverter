@@ -4,7 +4,6 @@
 //    Rudi Pettazzi <rudi.pettazzi@gmail.com>
 //
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("Ude")]
 [assembly: AssemblyDescription("C# port of Mozilla Universal Charset Detector")]

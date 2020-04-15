@@ -36,9 +36,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace Ude.Core
@@ -89,12 +86,7 @@ namespace Ude.Core
             return this.state;
         }
 
-        public virtual void SetOption()
-        { 
-        
-        }
-
-        public virtual void DumpStatus()
+	    public virtual void DumpStatus()
         { 
         
         }

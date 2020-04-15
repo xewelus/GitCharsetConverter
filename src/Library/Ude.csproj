@@ -76,7 +76,6 @@
     <Compile Include="Ude.Core\LangGreekModel.cs" />
     <Compile Include="Ude.Core\LangHungarianModel.cs" />
     <Compile Include="Ude.Core\LangThaiModel.cs" />
-    <Compile Include="Ude.Core\Big5Prober.cs" />
     <Compile Include="Ude.Core\EUCJPProber.cs" />
     <Compile Include="Ude.Core\EUCKRProber.cs" />
     <Compile Include="Ude.Core\EUCTWProber.cs" />
@@ -84,7 +83,6 @@
     <Compile Include="Ude.Core\SJISProber.cs" />
     <Compile Include="Ude\ICharsetDetector.cs" />
     <Compile Include="Ude\CharsetDetector.cs" />
-    <Compile Include="Ude\DetectionConfidence.cs" />
     <Compile Include="Ude.Core\Charsets.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
