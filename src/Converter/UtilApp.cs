@@ -11,6 +11,7 @@ namespace Converter
 	public static class UtilApp
 	{
 		public static bool LOG_ENABLED = true;
+		public static bool ONLY_COMMIT_FILES = false;
 		private static string logPrefix = new string(' ', 7);
 		public static void Process(string[] args)
 		{
@@ -25,10 +26,10 @@ namespace Converter
 
 				if (LOG_ENABLED)
 				{
-					Log(string.Format("Project alias: {0}, folder: {1}", projDir, folder));
+					Log(string.Format("Project alias: {0}, folder: {1}", projDir, folder), false, true);
 				}
 
-				List<string> files = GetFiles(folder, projDir);
+				List<string> files = ONLY_COMMIT_FILES ? GetFiles(folder, projDir) : null;
 				ProcessFolder(folder, files);
 			}
 			catch (Exception ex)
@@ -241,9 +242,14 @@ namespace Converter
 			//MessageBox.Show(file + ":\r\n\r\n" + exception, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
-		private static void Log(string message, bool error = false)
+		private static void Log(string message, bool error = false, bool emptyLine = false)
 		{
 			string text = string.Format("\r\n[{0:dd.MM.yyyy HH.mm:ss} {1}] {2}", DateTime.Now, logPrefix, message);
+			if (emptyLine)
+			{
+				text = "\r\n" + text;
+			}
+
 			string logFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
 			File.AppendAllText(logFile, text, Encoding.UTF8);
 
